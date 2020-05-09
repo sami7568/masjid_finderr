@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
-
+import 'package:masjid_finder/main.dart';
 
 class CustomTextField extends StatelessWidget {
   final hint;
@@ -16,13 +16,13 @@ class CustomTextField extends StatelessWidget {
 
   CustomTextField(
       {this.hint = '',
-        this.controller,
-        this.inputType = TextInputType.text,
-        this.label,
-        this.onChange,
-        this.isPassword = false,
-        this.bottomPadding = 16,
-        this.textCapitalization = TextCapitalization.none});
+      this.controller,
+      this.inputType = TextInputType.text,
+      this.label,
+      this.onChange,
+      this.isPassword = false,
+      this.bottomPadding = 16,
+      this.textCapitalization = TextCapitalization.none});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +34,12 @@ class CustomTextField extends StatelessWidget {
         textCapitalization: textCapitalization,
         obscureText: isPassword,
         style:
-        TextStyle(fontSize: 15, color: blueFontColor, fontFamily: 'Arial'),
+            TextStyle(fontSize: 15, color: mainThemeColor, fontFamily: 'Arial'),
         decoration: InputDecoration(
           border: OutlineInputBorder(
-              borderSide: BorderSide(color: blueFontColor)),
+              borderSide: BorderSide(
+            color: mainThemeColor,
+          )),
           labelText: label,
           labelStyle: TextStyle(
               fontSize: 10, color: blueFontLabelColor, fontFamily: 'Arial'),
