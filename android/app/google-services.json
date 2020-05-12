@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "755117168048",
+    "firebase_url": "https://majid-finder.firebaseio.com",
+    "project_id": "majid-finder",
+    "storage_bucket": "majid-finder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755117168048:android:1164211604f83b0dc7f275",
+        "android_client_info": {
+          "package_name": "com.example.masjid_finder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755117168048-hc60lujn1trlu04beb014li4o613vh4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg_0rinkZeGA5opOc1m4e0IfCYUYEOT2Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755117168048-hc60lujn1trlu04beb014li4o613vh4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
