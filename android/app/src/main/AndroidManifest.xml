@@ -9,6 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="masjid_finder"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCGLmFnR5eZBmb3cbjXEEDs4iffeJSsl0s"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

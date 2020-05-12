@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_finder/pages/masjid-details-screen.dart';
-import 'package:masjid_finder/pages/user-login-screen.dart';
 import 'package:masjid_finder/constants/colors.dart';
-import 'package:masjid_finder/pages/location-access.dart';
 import 'package:masjid_finder/pages/splash-screen.dart';
 
 void main() => runApp(MyApp());
