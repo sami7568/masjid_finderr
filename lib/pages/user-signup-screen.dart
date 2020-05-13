@@ -76,7 +76,10 @@ class _UserSignUpScreenState extends State<UserSignUpScreen> {
           ),
           SizedBox(height: 40),
           CustomBlueRoundedButton(
-            text: 'SIGN UP',
+            child: Text(
+              'SIGN UP',
+              style: roundedBlueBtnTS,
+            ),
             onPressed: () {},
           ),
         ],

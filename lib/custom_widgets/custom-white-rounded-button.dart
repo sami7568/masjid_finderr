@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 
-class CustomBlueRoundedButton extends StatelessWidget {
+class CustomWhiteRoundedButton extends StatelessWidget {
   final onPressed;
   final child;
 
-  CustomBlueRoundedButton({this.onPressed, this.child});
+  CustomWhiteRoundedButton({this.onPressed, this.child});
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return RaisedButton(
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: child,
       ),
-      color: blueFontLabelColor,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(40))),
     );

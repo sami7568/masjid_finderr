@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           SizedBox(height: 40),
           CustomBlueRoundedButton(
-            text: 'LOG IN',
+            child: Text('LOG IN', style: roundedBlueBtnTS,),
             onPressed: () {},
           ),
           Padding(
