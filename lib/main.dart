@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
+import 'package:masjid_finder/pages/imam-login-screen.dart';
 import 'package:masjid_finder/pages/imam-signup-screen.dart';
 import 'package:masjid_finder/pages/prompt-screen.dart';
 import 'package:masjid_finder/pages/show-on-maps-screen.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           backgroundColor: backgroundColor,
           scaffoldBackgroundColor: backgroundColor),
-      home: ImamSignUpScreen(),
+      home: ImamLoginScreen(),
     );
   }
 }
