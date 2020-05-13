@@ -43,7 +43,14 @@ class CustomTextField extends StatelessWidget {
 //            iconData,
 //            color: mainThemeColor,
 //          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(
+              color: mainThemeColor,
+            ),
+          ),
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(
               color: mainThemeColor,
             ),

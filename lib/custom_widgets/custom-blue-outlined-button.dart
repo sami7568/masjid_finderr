@@ -3,21 +3,17 @@ import 'package:masjid_finder/constants/colors.dart';
 
 class CustomBlueOutlinedButton extends StatelessWidget {
   final onPressed;
-  final text;
+  final child;
 
-  CustomBlueOutlinedButton({this.onPressed, this.text});
+  CustomBlueOutlinedButton({this.onPressed, this.child});
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
+      color: Colors.white,
       onPressed: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Text(
-          text ?? '',
-          style: TextStyle(color: mainThemeColor),
-        ),
-      ),
+          padding: const EdgeInsets.symmetric(vertical: 14), child: child),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: mainThemeColor),
         borderRadius: BorderRadius.all(

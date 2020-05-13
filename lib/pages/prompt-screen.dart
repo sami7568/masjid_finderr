@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/custom_widgets/custom-blue-outlined-button.dart';
 import 'package:masjid_finder/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/custom_widgets/custom-white-rounded-button.dart';
 
@@ -52,7 +53,7 @@ class PromptScreen extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-          child: CustomWhiteRoundedButton(
+          child: CustomBlueOutlinedButton(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Text('I am an Imam',

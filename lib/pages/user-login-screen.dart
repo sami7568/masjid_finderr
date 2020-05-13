@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/custom_widgets/custom-blue-outlined-button.dart';
 import 'package:masjid_finder/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/custom_widgets/custom-login-textfield.dart';
+import 'package:masjid_finder/main.dart';
 import 'package:masjid_finder/pages/user-signup-screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -83,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           CustomBlueOutlinedButton(
-            text: 'SIGN UP',
+            child: Text('SIGN UP', style: TextStyle(color: mainThemeColor),),
             onPressed: () {
               Navigator.push(
                 context,
