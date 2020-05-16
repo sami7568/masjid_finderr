@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/enums/auth-result-status.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
+import 'package:masjid_finder/services/auth-exception-handler.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-outlined-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-rounded-textfield.dart';
 import 'package:masjid_finder/ui/pages/user-signup-screen.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
+import 'package:masjid_finder/ui/pages/location-access.dart';
 
-class LoginScreen extends StatefulWidget {
+class UserLoginScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _UserLoginScreenState createState() => _UserLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+class _UserLoginScreenState extends State<UserLoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool isInProgress = false;
+
+  String email;
+  String password;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
+        body: ModalProgressHUD(
+          inAsyncCall: isInProgress,
+          child: SingleChildScrollView(
+            child: Container(
               padding: EdgeInsets.only(left: 20, right: 20, top: 50),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-//        decoration: BoxDecoration(image: DecorationImage(image: )),
               color: Color(0xff00AFEF),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,63 +49,114 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   _loginForm(),
                 ],
-              )),
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
   _loginForm() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          CustomRoundedTextField(
-            hint: 'user-name@email.com',
-            label: 'Email',
-            controller: emailController,
-            iconData: Icons.email,
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: Consumer<AuthProvider>(
+        builder: (context, authProvider, child) => Container(
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(5)),
           ),
-          CustomRoundedTextField(
-            hint: '*********',
-            label: 'Password',
-            controller: passwordController,
-            iconData: Icons.lock,
-          ),
-          SizedBox(height: 40),
-          CustomBlueRoundedButton(
-            child: Text('LOG IN', style: roundedBlueBtnTS,),
-            onPressed: () {},
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 14, bottom: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Not yet Registered?",
-                  style: greyTS,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              CustomRoundedTextField(
+                hint: 'user-name@email.com',
+                label: 'Email',
+                controller: emailController,
+                iconData: Icons.email,
+                onChange: (val) {
+                  email = val;
+                },
+              ),
+              CustomRoundedTextField(
+                hint: '*********',
+                label: 'Password',
+                isPassword: true,
+                controller: passwordController,
+                iconData: Icons.lock,
+                onChange: (val) {
+                  password = val;
+                },
+              ),
+              SizedBox(height: 40),
+              CustomBlueRoundedButton(
+                child: Text(
+                  'LOG IN',
+                  style: roundedBlueBtnTS,
                 ),
-              ],
-            ),
-          ),
-          CustomBlueOutlinedButton(
-            child: Text('SIGN UP', style: TextStyle(color: mainThemeColor),),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserSignUpScreen(),
+                onPressed: () async {
+                  setState(() {
+                    isInProgress = true;
+                  });
+                  await authProvider.login(email: email, pass: password);
+                  setState(() {
+                    isInProgress = false;
+                  });
+                  if (authProvider.status == AuthResultStatus.successful) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationAccess()),
+                        (r) => false);
+                  } else {
+                    final errorMsg =
+                        AuthExceptionHandler.generateExceptionMessage(
+                            authProvider.status);
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Login Failed',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: Text(errorMsg),
+                          );
+                        });
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 14, bottom: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Not yet Registered?",
+//                      '${authProvider.loginInProgress}',
+                      style: greyTS,
+                    ),
+                  ],
                 ),
-              );
-            },
+              ),
+              CustomBlueOutlinedButton(
+                child: Text(
+                  'SIGN UP',
+                  style: TextStyle(color: mainThemeColor),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserSignUpScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
