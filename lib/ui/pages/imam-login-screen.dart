@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/enums/auth-result-status.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
+import 'package:masjid_finder/services/auth-exception-handler.dart';
+import 'package:masjid_finder/ui/custom_widgets/asset-logo.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-rounded-textfield.dart';
+import 'package:masjid_finder/ui/pages/imam-signup-screen.dart';
+import 'package:masjid_finder/ui/pages/mosque-not-listed.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 class ImamLoginScreen extends StatefulWidget {
   @override
@@ -10,46 +18,40 @@ class ImamLoginScreen extends StatefulWidget {
 }
 
 class _ImamLoginScreenState extends State<ImamLoginScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  bool isInProgress = false;
+  String email;
+  String password;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-//        decoration: BoxDecoration(image: DecorationImage(image: )),
-              color: greyBgColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Logo'),
-                      Text(
-                        'Masjid',
-                        style: urduLogoTS.copyWith(fontSize: 20),
-                      ),
-                      Text(
-                        'Finder',
-                        style: urduLogoTS.copyWith(fontSize: 20),
-                      )
-                    ],
-                  ),
-                  _signUpForm(),
-                ],
-              )),
+      child: ModalProgressHUD(
+        inAsyncCall: isInProgress,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: ChangeNotifierProvider(
+              create: (context) => AuthProvider(),
+              child: Container(
+                padding: EdgeInsets.only(left: 20, right: 20, top: 50),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: greyBgColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    AssetLogo('assets/static_assets/blue-logo.png'),
+                    _signInForm(),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  _signUpForm() {
+  _signInForm() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
       decoration: BoxDecoration(
@@ -61,25 +63,63 @@ class _ImamLoginScreenState extends State<ImamLoginScreen> {
           CustomRoundedTextField(
             hint: 'userName@email.com',
             label: 'Email',
-            controller: emailController,
+            onChange: (val) {
+              email = val;
+            },
           ),
           CustomRoundedTextField(
             hint: '*********',
             label: 'Password',
-            controller: passwordController,
             isPassword: true,
+            onChange: (val) {
+              password = val;
+            },
           ),
           SizedBox(height: 20),
-          CustomBlueRoundedButton(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                'LOG IN',
-                style: roundedBlueBtnTS,
+          Consumer<AuthProvider>(builder: (context, authProvider, child) {
+            return CustomBlueRoundedButton(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  'LOG IN',
+                  style: roundedBlueBtnTS,
+                ),
               ),
-            ),
-            onPressed: () {},
-          ),
+              onPressed: () async {
+                setState(() {
+                  isInProgress = true;
+                });
+                await authProvider.login(
+                    email: email, pass: password, isImam: true);
+                setState(() {
+                  isInProgress = false;
+                });
+                if (authProvider.status == AuthResultStatus.successful) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MosqueNotListed()),
+                      (r) => false);
+                } else {
+                  final errorMsg =
+                      AuthExceptionHandler.generateExceptionMessage(
+                          authProvider.status);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          'Login Failed',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: Text(errorMsg),
+                      );
+                    },
+                  );
+                }
+              },
+            );
+          }),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +134,14 @@ class _ImamLoginScreenState extends State<ImamLoginScreen> {
                     color: mainThemeColor,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImamSignUpScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           )

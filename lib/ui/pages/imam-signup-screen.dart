@@ -1,48 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/enums/auth-result-status.dart';
+import 'package:masjid_finder/models/imam-model.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
+import 'package:masjid_finder/services/auth-exception-handler.dart';
+import 'package:masjid_finder/ui/custom_widgets/asset-logo.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-rounded-textfield.dart';
+import 'package:masjid_finder/ui/pages/mosque-not-listed.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
+
 class ImamSignUpScreen extends StatefulWidget {
   @override
   _ImamSignUpScreenState createState() => _ImamSignUpScreenState();
 }
 
 class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  Imam imam = Imam();
+  bool isInProgress;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-//        decoration: BoxDecoration(image: DecorationImage(image: )),
-              color: greyBgColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      child: ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+        child: ModalProgressHUD(
+          inAsyncCall: isInProgress,
+          child: Scaffold(
+            body: SingleChildScrollView(
+              child: Container(
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 50),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: greyBgColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text('Logo'),
-                      Text(
-                        'Masjid',
-                        style: urduLogoTS.copyWith(fontSize: 20),
-                      ),
-                      Text(
-                        'Finder',
-                        style: urduLogoTS.copyWith(fontSize: 20),
-                      )
+                      AssetLogo('assets/static_assets/blue-logo.png'),
+                      _signUpForm(),
                     ],
-                  ),
-                  _signUpForm(),
-                ],
-              )),
+                  )),
+            ),
+          ),
         ),
       ),
     );
@@ -60,34 +61,77 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
           CustomRoundedTextField(
             hint: 'FirstName LastName',
             label: 'Full Name',
-            controller: emailController,
+            onChange: (val) {
+              imam.fullName = val;
+            },
           ),
           CustomRoundedTextField(
             hint: 'userName@email.com',
             label: 'Email',
-            controller: emailController,
+            onChange: (val) {
+              imam.email = val;
+            },
           ),
           CustomRoundedTextField(
             hint: '03*******97',
             label: 'Contact',
-            controller: passwordController,
+            onChange: (val) {
+              imam.contact = val;
+            },
           ),
           CustomRoundedTextField(
             hint: '*********',
             label: 'Password',
-            controller: passwordController,
             isPassword: true,
+            onChange: (val) {
+              imam.password = val;
+            },
           ),
           SizedBox(height: 20),
-          CustomBlueRoundedButton(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                'SIGN UP',
-                style: roundedBlueBtnTS,
-              ),
-            ),
-            onPressed: () {},
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              return CustomBlueRoundedButton(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    'SIGN UP',
+                    style: roundedBlueBtnTS,
+                  ),
+                ),
+                onPressed: () async {
+                  setState(() {
+                    isInProgress = true;
+                  });
+                  await authProvider.createAccount(user: imam, isImam: true);
+                  setState(() {
+                    isInProgress = false;
+                  });
+                  if (authProvider.status == AuthResultStatus.successful) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MosqueNotListed()),
+                        (r) => false);
+                  } else {
+                    final errorMsg =
+                        AuthExceptionHandler.generateExceptionMessage(
+                            authProvider.status);
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(
+                            'Login Failed',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          content: Text(errorMsg),
+                        );
+                      },
+                    );
+                  }
+                },
+              );
+            },
           ),
           SizedBox(height: 20),
           Row(
@@ -96,15 +140,14 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
               Text('Already have an account?', style: alreadyHaveAccountTS),
               SizedBox(width: 3),
               GestureDetector(
-                child: Text(
-                  'Login',
-                  style: alreadyHaveAccountTS.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: mainThemeColor,
+                  child: Text(
+                    'Login',
+                    style: alreadyHaveAccountTS.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: mainThemeColor,
+                    ),
                   ),
-                ),
-                onTap: (){},
-              ),
+                  onTap: () {}),
             ],
           )
         ],
