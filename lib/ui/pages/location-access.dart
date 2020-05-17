@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/location-access-card.dart';
+import 'package:provider/provider.dart';
 
 import 'mosques-result.dart';
 
@@ -13,9 +15,10 @@ class LocationAccess extends StatefulWidget {
 class _LocationAccessState extends State<LocationAccess> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Stack(
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: Scaffold(
+        body: Stack(
           children: <Widget>[
             Column(
               children: <Widget>[
@@ -56,20 +59,23 @@ class _LocationAccessState extends State<LocationAccess> {
                   ),
                 ),
 
-                Container(
-                  margin: EdgeInsets.fromLTRB(24, 27, 24, 0),
-                  child: blackButton(
-                    text: "TURN ON LOCATION",
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => MosquesResult(),
-                        ),
-                      );
-                    },
-                  ),
-                )
+                Consumer<AuthProvider>(builder: (context, authProvider, child) {
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(24, 27, 24, 0),
+                    child: blackButton(
+                      text: "TURN ON LOCATION",
+                      onPressed: () {
+                        authProvider.logout();
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (BuildContext context) => MosquesResult(),
+//                      ),
+//                    );
+                      },
+                    ),
+                  );
+                })
               ],
             )
           ],

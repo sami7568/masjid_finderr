@@ -19,7 +19,7 @@ class ImamSignUpScreen extends StatefulWidget {
 
 class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
   Imam imam = Imam();
-  bool isInProgress;
+  bool isInProgress = false;
 
   @override
   Widget build(BuildContext context) {
