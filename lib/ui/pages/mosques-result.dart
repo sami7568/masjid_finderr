@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
+import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
 
@@ -15,19 +19,77 @@ class MosquesResult extends StatefulWidget {
 class _MosquesResultState extends State<MosquesResult> {
   bool gotData = false, noData = false;
   List<Masjid> _mosquesList = [];
+  final geoLocatorHelper = GeoLocatorHelper();
+
   @override
   void initState() {
+    _getNearbyMosquesData();
     super.initState();
-    getData();
   }
 
-  getData() {
-    FirestoreHelper().getAllMasjid().then((val) {
-      _mosquesList = val;
-      gotData = true;
-      if (_mosquesList.length < 1) noData = true;
-      setState(() {});
-    });
+  _getNearbyMosquesData() async {
+    final currentLocation = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        locationPermissionLevel: GeolocationPermission.location);
+
+    print('Current Location: $currentLocation');
+
+    ///
+    /// If unable to get current Location
+    ///
+    if (currentLocation == null) {
+      print('Current Location is null');
+      final status = await geoLocatorHelper.isGpsEnabled();
+      if (status) {
+        _showPermissionsAlert();
+      } else
+        geoLocatorHelper.enableGps();
+      return;
+    }
+
+    ///
+    /// If successfully gets current location, perform rest of
+    /// operations.
+    ///
+    final center =
+        GeoFirePoint(currentLocation.latitude, currentLocation.longitude);
+    final double radius = 2;
+    final geoFlutterFire = Geoflutterfire();
+    final ref = Firestore.instance.collection('masjid');
+
+    try {
+      final stream = geoFlutterFire
+          .collection(collectionRef: ref)
+          .within(center: center, radius: radius, field: 'position');
+      stream.listen(
+        (List<DocumentSnapshot> docsList) {
+          gotData = true;
+          if (docsList.length == 0) {
+            noData = true;
+          } else {
+            _mosquesList = docsList.map((masjidData) {
+              return Masjid.fromJson(masjidData);
+            }).toList();
+          }
+          setState(() {});
+        },
+      );
+    } catch (e) {
+      print('Exception @getNearbyMosqueData: #e');
+    }
+  }
+
+  _showPermissionsAlert() {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Location Permissions disabled'),
+            content: Text(
+                'Please turn on Location Permissions in settings>Apps>MasjidFinder>Permissions to access nearby Locations'),
+          );
+        });
   }
 
   @override

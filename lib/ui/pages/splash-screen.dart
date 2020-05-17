@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/enums/user-type.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
-import 'package:masjid_finder/services/my-geolocator.dart';
+import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/pages/imam-signup-screen.dart';
 import 'dart:async';
 
@@ -23,7 +23,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     _initializeSharedPref();
-    MyGeolocator().checkPermission();
     super.initState();
     Timer(
       Duration(milliseconds: 1500),
