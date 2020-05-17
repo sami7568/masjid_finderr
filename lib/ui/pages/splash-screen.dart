@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_finder/enums/user-type.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/services/my-geolocator.dart';
+import 'package:masjid_finder/ui/pages/imam-signup-screen.dart';
 import 'dart:async';
 
 import 'package:masjid_finder/ui/pages/location-access.dart';
+import 'package:masjid_finder/ui/pages/prompt-screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
+  static SharedPreferences prefs;
+
   @override
   SplashScreenState createState() {
     return SplashScreenState();
@@ -14,16 +22,27 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    _initializeSharedPref();
     MyGeolocator().checkPermission();
     super.initState();
     Timer(
       Duration(milliseconds: 1500),
       () => Navigator.of(context).pushReplacement(
-            FadeRoute(
-              page: LocationAccess(),
-            ),
-          ),
+        FadeRoute(
+          page: Provider.of<AuthProvider>(context, listen: false).userType ==
+                  null
+              ? PromptScreen()
+              : Provider.of<AuthProvider>(context, listen: false).userType ==
+                      UserType.user
+                  ? LocationAccess()
+                  : ImamSignUpScreen(),
+        ),
+      ),
     );
+  }
+
+  _initializeSharedPref() async {
+    SplashScreen.prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -77,6 +96,7 @@ class MyClipper extends CustomClipper<Path> {
 //Animation Route for SplashScreen
 class FadeRoute extends PageRouteBuilder {
   final Widget page;
+
   FadeRoute({this.page})
       : super(
           pageBuilder: (
@@ -92,8 +112,8 @@ class FadeRoute extends PageRouteBuilder {
             Widget child,
           ) =>
               FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
+            opacity: animation,
+            child: child,
+          ),
         );
 }

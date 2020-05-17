@@ -1,20 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:masjid_finder/enums/user-type.dart';
 import 'package:masjid_finder/services/auth-exception-handler.dart';
 import 'package:masjid_finder/enums/auth-result-status.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
+import 'package:masjid_finder/services/sharedPrefs-helper.dart';
 
 class AuthProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   final _firestoreHelper = FirestoreHelper();
+  final _sharedPrefsHelper = SharePrefHelper();
   bool loginInProgress = false;
 
   bool _isLogin = false;
-  bool _isImam = false;
+  UserType _userType;
   FirebaseUser _user;
   AuthResultStatus _status;
 
   AuthProvider() {
+    _userType = _sharedPrefsHelper.getUserType();
     _auth.onAuthStateChanged.listen((firebaseUser) {
       _user = firebaseUser;
       if (_user != null)
@@ -36,17 +40,24 @@ class AuthProvider extends ChangeNotifier {
   ///
   FirebaseUser get user => _user;
 
-  bool get isImam => _isImam;
-
   bool get isLogin => _isLogin;
 
   AuthResultStatus get status => _status;
 
+  UserType get userType => _userType;
+
   ///
   /// setters
   ///
-  setImamAs(bool status) {
-    _isImam = status;
+  setAsImam() {
+    _userType = UserType.imam;
+    _sharedPrefsHelper.setAsImam();
+    notifyListeners();
+  }
+
+  setAsUser() {
+    _userType = UserType.user;
+    _sharedPrefsHelper.setAsUser();
     notifyListeners();
   }
 
@@ -55,16 +66,11 @@ class AuthProvider extends ChangeNotifier {
   ///
 
   Future<void> createAccount({user, isImam = false}) async {
-//    setLoginInProgress();
     try {
       final authResult = await _auth.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
 
       if (authResult.user != null) {
-        _isLogin = true;
-        _status = AuthResultStatus.successful;
-        _user = authResult.user;
-        _isImam = isImam;
         _status = AuthResultStatus.successful;
         _firestoreHelper.createUser(
             user: user, userId: _user.uid, isImam: isImam);
@@ -76,7 +82,6 @@ class AuthProvider extends ChangeNotifier {
       _status = AuthExceptionHandler.handleException(e);
     }
 
-//    unSetLoginInProgress();
     notifyListeners();
   }
 
@@ -98,14 +103,10 @@ class AuthProvider extends ChangeNotifier {
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
 
       if (authResult.user != null) {
-        _user = authResult.user;
-        _isLogin = true;
-        _isImam = isImam;
-
         /// If user logs in as an Imam, check if user account was also
         /// created as Imam. If successful, go ahead otherwise logout
         /// from firebase auth.
-        if (isImam) {
+        if (userType == UserType.imam) {
           final status = await _firestoreHelper.checkIfImam(_user.uid);
           if (status) {
             _status = AuthResultStatus.successful;
@@ -118,7 +119,7 @@ class AuthProvider extends ChangeNotifier {
         /// If user logs in as a general user, check if user account was also
         /// created as general user. If successful, go ahead otherwise logout
         /// from firebase auth.
-        if (!isImam) {
+        if (userType == UserType.user) {
           final status = await _firestoreHelper.checkIfUser(_user.uid);
           if (status) {
             _status = AuthResultStatus.successful;
@@ -138,14 +139,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   logout() {
-    setLoginInProgress();
     _auth.signOut();
-//    _isLogin = false;
-//    _isImam = false;
-//    _user = null;
-//
-//    unSetLoginInProgress();
-//    notifyListeners();
+    notifyListeners();
   }
 
 //  @override
