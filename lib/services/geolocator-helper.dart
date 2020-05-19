@@ -22,7 +22,7 @@ class GeoLocatorHelper {
     return status;
   }
 
-  enableGps() async {
+  Future<void> enableGps() async {
     if (Platform.isAndroid) {
       final AndroidIntent intent =
           AndroidIntent(action: 'android.settings.LOCATION_SOURCE_SETTINGS');
@@ -30,14 +30,14 @@ class GeoLocatorHelper {
     }
   }
 
-  getCurrentLocation() async {
-    final status = await isGpsEnabled();
-    if (status) {
-      Position currentLocation = await geoLocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best,
-          locationPermissionLevel: GeolocationPermission.location);
-    } else {
-      return null;
-    }
-  }
+//  getCurrentLocation() async {
+//    final status = await isGpsEnabled();
+//    if (status) {
+//      Position currentLocation = await geoLocator.getCurrentPosition(
+//          desiredAccuracy: LocationAccuracy.best,
+//          locationPermissionLevel: GeolocationPermission.location);
+//    } else {
+//      return null;
+//    }
+//  }
 }

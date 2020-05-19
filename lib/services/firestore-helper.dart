@@ -7,7 +7,8 @@ class FirestoreHelper {
   final _db = Firestore.instance;
   final _userCollection = 'users';
   final _imamCollection = 'imams';
-  final _masjidCollection = 'mansjid';
+  final _masjidCollection = 'masjid';
+  final _registerMasjidCollection = 'registerMasjid';
   Stream<String> fcmStream;
 
   Future<List<Masjid>> getAllMasjid() {
@@ -92,6 +93,19 @@ class FirestoreHelper {
     } catch (e) {
       print('Exception @checkIfUser: $e');
       return null;
+    }
+  }
+
+  createMasjid({Masjid masjid, uid}) async {
+    print('@createMasjid');
+    print('${masjid.toJson()}');
+    try {
+      await _db
+          .collection(_masjidCollection)
+          .document(uid)
+          .setData(masjid.toJson());
+    } catch (e) {
+      print('Exception @creatMasjid: $e');
     }
   }
 }

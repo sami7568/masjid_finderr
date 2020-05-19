@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
@@ -7,6 +6,7 @@ import 'package:masjid_finder/ui/custom_widgets/asset-logo.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-outlined-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/ui/pages/imam-login-screen.dart';
+import 'package:masjid_finder/ui/pages/imam-signup-screen.dart';
 import 'package:masjid_finder/ui/pages/location-access.dart';
 import 'package:masjid_finder/ui/pages/nearby-mosques-screen.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +21,7 @@ class PromptScreen extends StatelessWidget {
       ),
     );
   }
+
   _body(context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -64,7 +65,7 @@ class PromptScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NearbyMosquesScreen(),
+                  builder: (context) => ImamSignUpScreen(),
                 ),
               );
             },

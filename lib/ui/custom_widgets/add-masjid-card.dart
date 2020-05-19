@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AddMasjidCard extends StatelessWidget {
+  final onBtnPressed;
+
+  AddMasjidCard({@required this.onBtnPressed});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,7 +69,7 @@ class AddMasjidCard extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              onPressed: () {},
+              onPressed: onBtnPressed,
             ),
           )
         ],

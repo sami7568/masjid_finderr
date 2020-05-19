@@ -22,9 +22,11 @@ class AuthProvider extends ChangeNotifier {
     print('userType: $_userType');
     _auth.onAuthStateChanged.listen((firebaseUser) {
       _user = firebaseUser;
-      if (_user != null)
+//      print(_user.email);
+      if (_user != null) {
         _isLogin = true;
-      else
+//        print('Login status: $_isLogin');
+      } else
         _isLogin = false;
       notifyListeners();
       print('@AuthProvider: Login state changed: $isLogin');

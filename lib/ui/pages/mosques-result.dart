@@ -4,7 +4,6 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
-import 'package:masjid_finder/services/firestore-helper.dart';
 import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
@@ -147,7 +146,7 @@ class _MosquesResultState extends State<MosquesResult> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  MasjidDetailsScreen(masjidInfo),
+                                  MasjidDetailsScreen(),
                             ),
                           );
                         },
@@ -160,13 +159,16 @@ class _MosquesResultState extends State<MosquesResult> {
                 : Center(
                     child: CircularProgressIndicator(),
                   ),
-
             // MosqueListItem(),
 
             //Show on map button
             Container(
               margin: EdgeInsets.fromLTRB(12, 32, 12, 12),
-              child: blackButton(text: "SHOW ON MAP", onPressed: () {}),
+              child: blackButton(
+                  text: "SHOW ON MAP",
+                  onPressed: () {
+//                Provider.of<AuthProvider>(context, listen: false).logout();
+                  }),
             )
           ],
         ),

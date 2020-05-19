@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:masjid_finder/ui/custom_widgets/add-masjid-card.dart';
 import 'package:masjid_finder/ui/custom_widgets/admin-app-bar.dart';
 import 'package:masjid_finder/ui/custom_widgets/salam-card.dart';
+import 'package:masjid_finder/ui/pages/add-masjid-screen1.dart';
 
 class MosqueNotListed extends StatefulWidget {
   @override
@@ -14,7 +15,6 @@ class _MosqueNotListedState extends State<MosqueNotListed> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          
           children: <Widget>[
             //AppBar
             AdminAppBar(),
@@ -23,7 +23,16 @@ class _MosqueNotListedState extends State<MosqueNotListed> {
             SalamCard(),
 
             //Add Mosque Card
-            AddMasjidCard()
+            AddMasjidCard(
+              onBtnPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddMasjidScreen1(),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

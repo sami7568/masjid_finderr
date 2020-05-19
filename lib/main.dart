@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
-import 'package:masjid_finder/ui/pages/location-access.dart';
-import 'package:masjid_finder/ui/pages/mosque-listed.dart';
-import 'package:masjid_finder/ui/pages/prompt-screen.dart';
+import 'package:masjid_finder/providers/majid-provider.dart';
 import 'package:provider/provider.dart';
 import 'package:masjid_finder/ui/pages/splash-screen.dart';
 
-void main() => runApp(ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+void main() => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MasjidProvider(),
+        ),
+      ],
       child: MyApp(),
     ));
 

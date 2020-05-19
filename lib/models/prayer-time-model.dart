@@ -1,14 +1,14 @@
 class PrayerTime {
   String fajar, zuhar, asar, maghrib, isha, jummah;
 
-  PrayerTime(
+  PrayerTime({
     this.fajar,
     this.zuhar,
     this.asar,
     this.maghrib,
     this.isha,
     this.jummah,
-  );
+  });
 
   PrayerTime.fromJSON(prayerData) {
     this.fajar = prayerData['fajar'];

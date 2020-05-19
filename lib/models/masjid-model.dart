@@ -8,6 +8,7 @@ class Masjid {
   bool isJamiaMasjid;
   PrayerTime prayerTime;
   int subscribers;
+  String status;
 
   Masjid({
     this.name = 'Masjid Name',
@@ -15,8 +16,10 @@ class Masjid {
     this.position,
     this.isJamiaMasjid,
     this.subscribers,
-    this.prayerTime,
-  });
+    this.status = 'applied',
+  }) {
+    this.prayerTime = PrayerTime();
+  }
 
   Masjid.fromJson(masjidData) {
     this.name = masjidData['name'];
@@ -26,6 +29,7 @@ class Masjid {
     this.isJamiaMasjid = masjidData['isJamiaMasjid'];
     this.subscribers = masjidData['subscribers'];
     this.prayerTime = PrayerTime.fromJSON(masjidData['prayerTime']);
+    this.status = masjidData['status'];
   }
 
   toJson() {
@@ -35,6 +39,7 @@ class Masjid {
       'geoLocation': this.position.data,
       'isJamiaMasjid': this.isJamiaMasjid,
       'subscribers': this.subscribers,
+      'status': this.status,
       'prayerTime': prayerTime.toJSON(),
     };
   }

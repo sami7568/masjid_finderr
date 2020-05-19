@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:provider/provider.dart';
 import 'package:masjid_finder/enums/user-type.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
-import 'package:masjid_finder/services/geolocator-helper.dart';
-import 'package:masjid_finder/ui/pages/imam-signup-screen.dart';
-import 'dart:async';
-
+import 'package:masjid_finder/ui/pages/imam-login-screen.dart';
 import 'package:masjid_finder/ui/pages/location-access.dart';
 import 'package:masjid_finder/ui/pages/prompt-screen.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,20 +20,20 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    print('@SplashScreen');
     _initializeSharedPref();
     super.initState();
     Timer(
       Duration(milliseconds: 1500),
       () => Navigator.of(context).pushReplacement(
         FadeRoute(
-          page: Provider.of<AuthProvider>(context, listen: false).userType ==
-                  null
-              ? PromptScreen()
-              : Provider.of<AuthProvider>(context, listen: false).userType ==
-                      UserType.user
-                  ? LocationAccess()
-                  : ImamSignUpScreen(),
-        ),
+            page: Provider.of<AuthProvider>(context, listen: false).userType ==
+                    null
+                ? PromptScreen()
+                : Provider.of<AuthProvider>(context, listen: false).userType ==
+                        UserType.user
+                    ? LocationAccess()
+                    : ImamLoginScreen()),
       ),
     );
   }

@@ -23,26 +23,37 @@ class _ImamLoginScreenState extends State<ImamLoginScreen> {
   String password;
 
   @override
+  void initState() {
+    print('@ImamLoginScreen');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (Provider.of<AuthProvider>(context, listen: false).isLogin) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MosqueNotListed()),
+            (r) => false);
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ModalProgressHUD(
         inAsyncCall: isInProgress,
         child: Scaffold(
           body: SingleChildScrollView(
-            child: ChangeNotifierProvider(
-              create: (context) => AuthProvider(),
-              child: Container(
-                padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: greyBgColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    AssetLogo('assets/static_assets/blue-logo.png'),
-                    _signInForm(),
-                  ],
-                ),
+            child: Container(
+              padding: EdgeInsets.only(left: 20, right: 20, top: 50),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: greyBgColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  AssetLogo('assets/static_assets/blue-logo.png'),
+                  _signInForm(),
+                ],
               ),
             ),
           ),

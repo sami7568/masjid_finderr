@@ -8,6 +8,7 @@ import 'package:masjid_finder/services/auth-exception-handler.dart';
 import 'package:masjid_finder/ui/custom_widgets/asset-logo.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-blue-rounded-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-rounded-textfield.dart';
+import 'package:masjid_finder/ui/pages/imam-login-screen.dart';
 import 'package:masjid_finder/ui/pages/mosque-not-listed.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -22,27 +23,29 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
   bool isInProgress = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ChangeNotifierProvider(
-        create: (context) => AuthProvider(),
-        child: ModalProgressHUD(
-          inAsyncCall: isInProgress,
-          child: Scaffold(
-            body: SingleChildScrollView(
-              child: Container(
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: greyBgColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      AssetLogo('assets/static_assets/blue-logo.png'),
-                      _signUpForm(),
-                    ],
-                  )),
-            ),
+      child: ModalProgressHUD(
+        inAsyncCall: isInProgress,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: Container(
+                padding: EdgeInsets.only(left: 20, right: 20, top: 50),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: greyBgColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    AssetLogo('assets/static_assets/blue-logo.png'),
+                    _signUpForm(),
+                  ],
+                )),
           ),
         ),
       ),
@@ -61,6 +64,7 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
           CustomRoundedTextField(
             hint: 'FirstName LastName',
             label: 'Full Name',
+            textCapitalization: TextCapitalization.words,
             onChange: (val) {
               imam.fullName = val;
             },
@@ -75,6 +79,7 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
           CustomRoundedTextField(
             hint: '03*******97',
             label: 'Contact',
+            inputType: TextInputType.phone,
             onChange: (val) {
               imam.contact = val;
             },
@@ -147,7 +152,12 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
                       color: mainThemeColor,
                     ),
                   ),
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ImamLoginScreen()));
+                  }),
             ],
           )
         ],

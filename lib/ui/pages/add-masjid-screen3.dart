@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
+import 'package:masjid_finder/providers/majid-provider.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
+import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
+import 'package:provider/provider.dart';
 
 class AddMasjidScreen3 extends StatelessWidget {
   @override
@@ -19,10 +23,13 @@ class AddMasjidScreen3 extends StatelessWidget {
 
   _body() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         _header(),
-        _basicInfo(),
+        _stepNo(),
+        SizedBox(height: 10),
         _prayerTimings(),
+        _doneBtn(),
       ],
     );
   }
@@ -44,71 +51,80 @@ class AddMasjidScreen3 extends StatelessWidget {
     );
   }
 
-  _basicInfo() {
-    return Container(
-      padding: EdgeInsets.only(left: 24, right: 32),
-      height: 100,
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Spin Jumat', style: subHeadingTextStyle),
-              SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: orangeColor, width: 2)),
-                child: Text(
-                  'Jamia Masjid',
-                  style: jamiaMasjidTS,
-                ),
+  _stepNo() {
+    return Consumer<MasjidProvider>(
+        builder: (context, masjidProvider, child) => Container(
+              margin: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
-            ],
-          ),
-          CustomBlackButton(
-            child: Row(
-              children: <Widget>[
-                Text('EDIT PROFILE', style: blackBtnTS),
-              ],
-            ),
-            onPressed: () {},
-          )
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'List your masjid',
+                    style: subHeadingTextStyle.copyWith(color: mainThemeColor),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Step 3 of 3',
+                    style: TextStyle(
+                        color: Color(0xFF707070),
+                        fontFamily: 'Poppins',
+                        fontSize: 11),
+                  ),
+                ],
+              ),
+            ));
+  }
+
+  _prayerTimings() {
+    return Consumer<MasjidProvider>(
+      builder: (context, masjidProvider, child) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          namazTile(
+              namazType: 'Fajar',
+              iconUrl: 'assets/static_assets/fajar.png',
+              time: masjidProvider.masjid.prayerTime.fajar ?? 'Add Time',
+              context: context),
+          namazTile(
+              namazType: 'Zuhar',
+              iconUrl: 'assets/static_assets/zuhar.png',
+              time: masjidProvider.masjid.prayerTime.zuhar ?? 'Add Time',
+              context: context),
+          namazTile(
+              namazType: 'Asar',
+              iconUrl: 'assets/static_assets/asar.png',
+              time: masjidProvider.masjid.prayerTime.asar ?? 'Add Time',
+              context: context),
+          namazTile(
+              namazType: 'Maghrib',
+              iconUrl: 'assets/static_assets/maghrib.png',
+              time: masjidProvider.masjid.prayerTime.maghrib ?? 'Add Time',
+              context: context),
+          namazTile(
+              namazType: 'Isha',
+              iconUrl: 'assets/static_assets/isha.png',
+              time: masjidProvider.masjid.prayerTime.isha ?? 'Add Time',
+              context: context),
+          namazTile(
+              namazType: 'Jummah',
+              iconUrl: 'assets/static_assets/jummah.png',
+              time: masjidProvider.masjid.prayerTime.jummah ?? 'Add Time',
+              context: context),
+          SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  _prayerTimings() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 25, top: 40),
-          child: Text('Change Prayer Timings', style: subHeadingTextStyle),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 25, bottom: 10, top: 9),
-          child: Text('Tap a prayer tile to change its timings.'),
-        ),
-        namazTile(),
-        namazTile(),
-        namazTile(),
-        namazTile(),
-        namazTile(),
-        SizedBox(height: 20),
-      ],
-    );
-  }
-
-  namazTile({icon, namazType, time}) {
+  namazTile({iconUrl, namazType, time, context}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 3, horizontal: 15),
-      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: Colors.white,
@@ -118,20 +134,94 @@ class AddMasjidScreen3 extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.wb_sunny, color: timeColor),
+              Image.asset(
+                iconUrl,
+                width: 30,
+                height: 16,
+                fit: BoxFit.contain,
+              ),
               SizedBox(width: 15),
-              Text('Fajr', style: namazTypeTS),
+              Text(namazType, style: namazTypeTS),
             ],
           ),
           Row(children: <Widget>[
-            Icon(Icons.mode_edit, color: Colors.black),
+            Consumer<MasjidProvider>(
+              builder: (context, masjidProvider, child) => IconButton(
+                icon: Icon(Icons.mode_edit, color: Colors.black),
+                onPressed: () async {
+                  TimeOfDay time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: 12, minute: 00));
+//                  print(time.format(context));
+                  if (time != null) {
+                    final strTime = time.format(context);
+                    switch (namazType) {
+                      case 'Fajar':
+                        masjidProvider.setFajarTime(strTime);
+                        break;
+                      case 'Zuhar':
+                        masjidProvider.setZuharTime(strTime);
+                        break;
+                      case 'Asar':
+                        masjidProvider.setAsarTime(strTime);
+                        break;
+                      case 'Maghrib':
+                        masjidProvider.setMaghribTime(strTime);
+                        break;
+                      case 'Isha':
+                        masjidProvider.setIshaTime(strTime);
+                        break;
+                      case 'Jummah':
+                        masjidProvider.setJummahTime(strTime);
+                        break;
+                    }
+                  }
+                },
+              ),
+            ),
             SizedBox(width: 4),
             Text(
-              '4:30 AM',
+              time,
               style: namazTimeTS,
             )
           ]),
         ],
+      ),
+    );
+  }
+
+  _doneBtn() {
+    return Consumer<MasjidProvider>(
+      builder: (context, masjidProvider, child) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: RaisedButton(
+          color: masjidProvider.locationAdded ? mainThemeColor : Colors.grey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              'Done',
+              style: blackBtnTS,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          onPressed: () {
+            final uid =
+                Provider.of<AuthProvider>(context, listen: false).user.uid;
+            masjidProvider.createMasjidInDb(uid);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MasjidDetailsScreen()));
+//            if (masjidProvider.locationAdded) {
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(
+//                  builder: (context) => AddMasjidScreen3(),
+//                ),
+//              );
+//            }
+          },
+        ),
       ),
     );
   }
