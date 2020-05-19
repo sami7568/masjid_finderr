@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
+import 'package:masjid_finder/providers/fcm-provider.dart';
 import 'package:masjid_finder/providers/majid-provider.dart';
 import 'package:provider/provider.dart';
 import 'package:masjid_finder/ui/pages/splash-screen.dart';
@@ -12,6 +13,9 @@ void main() => runApp(MultiProvider(
         ),
         ChangeNotifierProvider(
           create: (context) => MasjidProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FcmNotificationsProvider(context),
         ),
       ],
       child: MyApp(),
