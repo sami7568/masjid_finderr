@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
-import 'package:masjid_finder/providers/majid-provider.dart';
+import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-bottom-sheet.dart';

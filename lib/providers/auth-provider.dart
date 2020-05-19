@@ -18,6 +18,7 @@ class AuthProvider extends ChangeNotifier {
   AuthResultStatus _status;
 
   AuthProvider() {
+    print('@AuthProvider');
     _userType = _sharedPrefsHelper.getUserType();
     print('userType: $_userType');
     _auth.onAuthStateChanged.listen((firebaseUser) {
@@ -109,6 +110,8 @@ class AuthProvider extends ChangeNotifier {
         /// If user logs in as an Imam, check if user account was also
         /// created as Imam. If successful, go ahead otherwise logout
         /// from firebase auth.
+
+        _firestoreHelper.createFcmToken(authResult.user.uid);
         if (userType == UserType.imam) {
           final status = await _firestoreHelper.checkIfImam(_user.uid);
           if (status) {

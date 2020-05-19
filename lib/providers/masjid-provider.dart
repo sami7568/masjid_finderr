@@ -8,9 +8,9 @@ class MasjidProvider extends ChangeNotifier {
   Masjid masjid = Masjid(position: GeoFirePoint(null, null));
   bool locationAdded = false;
 
-//  MasjidProvider() {
-//    _getInitialMasjidData();
-//  }
+  MasjidProvider() {
+    print('@MasjidProvder');
+  }
 
 //  _getInitialMasjidData() async {
 //    final snapshot = FirestoreHelper().getMasjidData();

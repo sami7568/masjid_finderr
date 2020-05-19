@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
-import 'package:masjid_finder/providers/majid-provider.dart';
+import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-squre-textfield.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
 import 'package:masjid_finder/ui/pages/add-masjid-screen2.dart';
