@@ -4,7 +4,7 @@ import 'package:masjid_finder/models/prayer-time-model.dart';
 class Masjid {
   String name;
   String address;
-  GeoFirePoint position;
+  GeoFirePoint geoLocation;
   bool isJamiaMasjid;
   PrayerTime prayerTime;
   int subscribers;
@@ -13,7 +13,7 @@ class Masjid {
   Masjid({
     this.name = 'Masjid Name',
     this.address = 'Address here',
-    this.position,
+    this.geoLocation,
     this.isJamiaMasjid,
     this.subscribers,
     this.status = 'applied',
@@ -24,19 +24,22 @@ class Masjid {
   Masjid.fromJson(masjidData) {
     this.name = masjidData['name'];
     this.address = masjidData['address'];
-    this.position = GeoFirePoint(
-        masjidData['position']['latitude'], masjidData['position']['latitude']);
+    this.geoLocation = GeoFirePoint(
+      masjidData['geoLocation']['geopoint'].latitude,
+      masjidData['geoLocation']['geopoint'].longitude,
+    );
     this.isJamiaMasjid = masjidData['isJamiaMasjid'];
     this.subscribers = masjidData['subscribers'];
     this.prayerTime = PrayerTime.fromJSON(masjidData['prayerTime']);
     this.status = masjidData['status'];
+    print(this.toJson());
   }
 
   toJson() {
     return {
       'name': this.name,
       'address': this.address,
-      'geoLocation': this.position.data,
+      'geoLocation': this.geoLocation.data,
       'isJamiaMasjid': this.isJamiaMasjid,
       'subscribers': this.subscribers,
       'status': this.status,

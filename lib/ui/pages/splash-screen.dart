@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_finder/ui/pages/user-login-screen.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:masjid_finder/enums/user-type.dart';
@@ -28,15 +27,15 @@ class SplashScreenState extends State<SplashScreen> {
       Duration(milliseconds: 1500),
       () => Navigator.of(context).pushReplacement(
         FadeRoute(
-//            page: Provider.of<AuthProvider>(context, listen: false).userType ==
-//                    null
-//                ? PromptScreen()
-//                : Provider.of<AuthProvider>(context, listen: false).userType ==
-//                        UserType.user
-//                    ? LocationAccess()
-//                    : ImamLoginScreen()),
-          page: UserLoginScreen(),
+          page: Provider.of<AuthProvider>(context, listen: false).userType ==
+                  null
+              ? PromptScreen()
+              : Provider.of<AuthProvider>(context, listen: false).userType ==
+                      UserType.user
+                  ? LocationAccess()
+                  : ImamLoginScreen(),
         ),
+//          page: UserLoginScreen(),
       ),
     );
   }

@@ -75,10 +75,10 @@ const greyTS = TextStyle(
     fontWeight: FontWeight.bold);
 
 const urduLogoTS =
-TextStyle(color: mainThemeColor, fontSize: 14, fontWeight: FontWeight.bold);
+    TextStyle(color: mainThemeColor, fontSize: 14, fontWeight: FontWeight.bold);
 
 const englishLogoTS =
-TextStyle(color: mainThemeColor, fontSize: 12, fontWeight: FontWeight.bold);
+    TextStyle(color: mainThemeColor, fontSize: 12, fontWeight: FontWeight.bold);
 
 const jamiaMasjidTS = TextStyle(
   color: orangeColor,
@@ -107,4 +107,11 @@ const namazTimeTS = TextStyle(
 );
 
 const alreadyHaveAccountTS = TextStyle(
-  color: Colors.black, fontSize: 14, fontFamily: 'Poppins',);
+  color: Colors.black,
+  fontSize: 14,
+  fontFamily: 'Poppins',
+);
+
+const alertDialogTS = TextStyle(fontSize: 11, color: Color(0xFF5E5E5E));
+const alertDialogTSBold = TextStyle(
+    fontSize: 11, color: Color(0xFF5E5E5E), fontWeight: FontWeight.bold);

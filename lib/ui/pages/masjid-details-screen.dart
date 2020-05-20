@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-outlined-button.dart';
+import 'package:masjid_finder/ui/custom_widgets/custom-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
+import 'package:masjid_finder/ui/pages/edit-masjid-profile-screen.dart';
 import 'package:provider/provider.dart';
 
 class MasjidDetailsScreen extends StatelessWidget {
@@ -25,8 +28,7 @@ class MasjidDetailsScreen extends StatelessWidget {
       children: <Widget>[
         _header(),
         _basicInfo(context),
-        _locationInfo(context),
-        _prayerTimings(context),
+        _prayerTimings(),
       ],
     );
   }
@@ -53,125 +55,120 @@ class MasjidDetailsScreen extends StatelessWidget {
     return Consumer<MasjidProvider>(
       builder: (context, masjidProvider, child) => Container(
         padding: EdgeInsets.only(left: 24, right: 32),
-        height: 100,
         color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(masjidProvider.masjid.name, style: subHeadingTextStyle),
-                SizedBox(height: 10),
-                masjidProvider.masjid.isJamiaMasjid
-                    ? Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: orangeColor, width: 2)),
-                        child: Text(
-                          'Jamia Masjid',
-                          style: jamiaMasjidTS,
-                        ),
-                      )
-                    : null,
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CustomBlackButton(
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.notifications, color: Colors.white, size: 17),
-                      SizedBox(width: 4),
-                      Text('SUBSCRIBE', style: blackBtnTS),
-                    ],
-                  ),
-                  onPressed: () {},
-                ),
-                Text(
-                  masjidProvider.masjid.subscribers != null
-                      ? '${masjidProvider.masjid.subscribers.toString()} subscribers'
-                      : '0 subscribers',
-                  style: subBodyTextStyle,
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  _locationInfo(context) {
-    return Consumer<MasjidProvider>(
-      builder: (context, masjidProvider, child) => Padding(
-        padding: const EdgeInsets.fromLTRB(25, 15, 32, 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Location', style: subHeadingTextStyle),
-                SizedBox(height: 10),
-                Text(masjidProvider.masjid.address, style: mainBodyTextStyle)
-              ],
-            ),
-            CustomBlackOutlinedButton(
-              child: Text(
-                'DIRECTIONS',
-                style: blackBtnTS.copyWith(color: Colors.black),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 22),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(masjidProvider.masjid.name, style: subHeadingTextStyle),
+                  SizedBox(height: 10),
+                  masjidProvider.masjid.isJamiaMasjid
+                      ? Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: orangeColor, width: 2)),
+                          child: Text(
+                            'Jamia Masjid',
+                            style: jamiaMasjidTS,
+                          ),
+                        )
+                      : null,
+                  Text('Address', style: subHeadingTextStyle),
+                  SizedBox(height: 10),
+                  Text(masjidProvider.masjid.address, style: mainBodyTextStyle)
+                ],
               ),
-              onPressed: () {},
-            ),
-          ],
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CustomBlackButton(
+                    child: Row(
+                      children: <Widget>[
+//                      Icon(Icons.notifications, color: Colors.white, size: 17),
+//                      SizedBox(width: 4),
+                        Text('Edit Profile', style: blackBtnTS),
+                      ],
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditMasjidProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  _prayerTimings(context) {
+  _prayerTimings() {
     return Consumer<MasjidProvider>(
       builder: (context, masjidProvider, child) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 25, top: 15),
-            child: Text('Prayer Timings', style: subHeadingTextStyle),
+            child: Text('Change Prayer Timings', style: subHeadingTextStyle),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 25, bottom: 10, top: 9),
-            child: Text('Subscribe to get notified of change in timings'),
+            child: Text('Tap a prayer tile to change its timings.'),
           ),
           namazTile(
-              namazType: "Fajar", time: masjidProvider.masjid.prayerTime.fajar),
+              namazType: 'Fajar',
+              iconUrl: 'assets/static_assets/fajar.png',
+              time: masjidProvider.masjid.prayerTime.fajar ?? 'Add Time',
+              context: context),
           namazTile(
-              namazType: "Zuhar", time: masjidProvider.masjid.prayerTime.zuhar),
+              namazType: 'Zuhar',
+              iconUrl: 'assets/static_assets/zuhar.png',
+              time: masjidProvider.masjid.prayerTime.zuhar ?? 'Add Time',
+              context: context),
           namazTile(
-              namazType: "Asar", time: masjidProvider.masjid.prayerTime.asar),
+              namazType: 'Asar',
+              iconUrl: 'assets/static_assets/asar.png',
+              time: masjidProvider.masjid.prayerTime.asar ?? 'Add Time',
+              context: context),
           namazTile(
-              namazType: "Maghrib",
-              time: masjidProvider.masjid.prayerTime.maghrib),
+              namazType: 'Maghrib',
+              iconUrl: 'assets/static_assets/maghrib.png',
+              time: masjidProvider.masjid.prayerTime.maghrib ?? 'Add Time',
+              context: context),
           namazTile(
-              namazType: "Isha", time: masjidProvider.masjid.prayerTime.isha),
+              namazType: 'Isha',
+              iconUrl: 'assets/static_assets/isha.png',
+              time: masjidProvider.masjid.prayerTime.isha ?? 'Add Time',
+              context: context),
           namazTile(
-              namazType: "Jummah",
-              time: masjidProvider.masjid.prayerTime.jummah),
+              namazType: 'Jummah',
+              iconUrl: 'assets/static_assets/jummah.png',
+              time: masjidProvider.masjid.prayerTime.jummah ?? 'Add Time',
+              context: context),
           SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  namazTile({icon, namazType = '', time = ''}) {
+  namazTile({iconUrl, namazType, time, context}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 3, horizontal: 15),
-      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: Colors.white,
@@ -181,17 +178,191 @@ class MasjidDetailsScreen extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.wb_sunny, color: timeColor),
+              Image.asset(
+                iconUrl,
+                width: 30,
+                height: 16,
+                fit: BoxFit.contain,
+              ),
               SizedBox(width: 15),
               Text(namazType, style: namazTypeTS),
             ],
           ),
-          Text(
-            time,
-            style: namazTimeTS,
+          Row(children: <Widget>[
+            Consumer<MasjidProvider>(
+              builder: (context, masjidProvider, child) => IconButton(
+                icon: Icon(Icons.mode_edit, color: Colors.black),
+                onPressed: () async {
+                  TimeOfDay time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: 12, minute: 00));
+//                  print(time.format(context));
+                  if (time != null) {
+                    var currentTime;
+                    bool status = false;
+                    final updatedNamazTime = time.format(context);
+                    switch (namazType) {
+                      case 'Fajar':
+                        currentTime = masjidProvider.masjid.prayerTime.fajar;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setFajarTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                      case 'Zuhar':
+                        currentTime = masjidProvider.masjid.prayerTime.zuhar;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setZuharTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                      case 'Asar':
+                        currentTime = masjidProvider.masjid.prayerTime.asar;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setAsarTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                      case 'Maghrib':
+                        currentTime = masjidProvider.masjid.prayerTime.maghrib;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setMaghribTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                      case 'Isha':
+                        currentTime = masjidProvider.masjid.prayerTime.isha;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setIshaTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                      case 'Jummah':
+                        currentTime = masjidProvider.masjid.prayerTime.jummah;
+                        status = await _showTimeChangeAlert(
+                            context: context,
+                            currentTime: currentTime,
+                            updatedTime: updatedNamazTime,
+                            namazType: namazType);
+                        print('Alert dialog closed with status: $status');
+                        if (status) {
+                          masjidProvider.setJummahTime(updatedNamazTime);
+                          masjidProvider.updateNamazTime(
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .user
+                                  .uid);
+                        }
+                        break;
+                    }
+                  }
+                },
+              ),
+            ),
+            SizedBox(width: 4),
+            Text(
+              time,
+              style: namazTimeTS,
+            )
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Future<bool> _showTimeChangeAlert(
+      {context, currentTime, updatedTime, String namazType}) async {
+    final status = await showDialog<bool>(
+      context: context,
+      child: CustomAlertDialog(
+        iconUrl: 'assets/static_assets/masjid-icon.png',
+        content: RichText(
+          text: TextSpan(
+            style: alertDialogTS,
+            text: 'Do you want to update',
+            children: [
+              TextSpan(text: ' $namazType ', style: alertDialogTSBold),
+              TextSpan(text: 'namaz time from'),
+              TextSpan(text: ' $currentTime ', style: alertDialogTSBold),
+              TextSpan(text: 'to'),
+              TextSpan(text: ' $updatedTime.', style: alertDialogTSBold),
+              TextSpan(
+                  text: 'All your subscribers will be notified for this change')
+            ],
+          ),
+        ),
+        actions: [
+          RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6)),
+              color: mainThemeColor,
+              child: Text(
+                'Confirm',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                Navigator.pop(context, true);
+              }),
+          RaisedButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            color: mainThemeColor,
+            child: Text(
+              'Not Now',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
           )
         ],
       ),
     );
+
+    return status;
   }
 }

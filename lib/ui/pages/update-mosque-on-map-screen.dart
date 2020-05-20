@@ -11,14 +11,16 @@ import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-bottom-sheet.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
+import 'package:masjid_finder/ui/pages/mosque-dashboard-screen.dart';
 import 'package:provider/provider.dart';
 
-class PinMosqueOnMapScreen extends StatefulWidget {
+class UpdateMosqueOnMapScreen extends StatefulWidget {
   @override
-  _PinMosqueOnMapScreenState createState() => _PinMosqueOnMapScreenState();
+  _UpdateMosqueOnMapScreenState createState() =>
+      _UpdateMosqueOnMapScreenState();
 }
 
-class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
+class _UpdateMosqueOnMapScreenState extends State<UpdateMosqueOnMapScreen> {
   bool gotCurrentLocation = false;
   final geoLocationHelper = GeoLocatorHelper();
   final baseLocation = LatLng(34.005679, 71.568206);
@@ -28,7 +30,7 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
   GoogleMapController _controller;
   Position currentLocation;
   var initialCameraPosition;
-  var dummyMarker;
+  var mosqueLocationMarker;
   var markers = Set<Marker>();
   var masjidPinIcon;
   var dummyMasjid = Masjid(name: 'Spin Jumat', address: 'University Road');
@@ -37,17 +39,35 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
   @override
   void initState() {
     print('@pinMosqueOnMap');
-    _animateToCurrentLocation();
-    _setCustomMapPins();
-    initialCameraPosition = CameraPosition(target: baseLocation, zoom: 15);
-    dummyMarker = Marker(
-      icon: masjidPinIcon,
-      position: baseLocation,
-      markerId: MarkerId(baseLocation.toString()),
-//      onTap: _showBottomSheet,
-    );
-//    markers.add(dummyMarker);
+    _doInitialSetup();
     super.initState();
+  }
+
+  _doInitialSetup() async {
+    _animateToMosqueLocation();
+//    _animateToCurrentLocation();
+    initialCameraPosition = CameraPosition(target: baseLocation, zoom: 15);
+    await _setCustomMapPins();
+    final lat = Provider.of<MasjidProvider>(context, listen: false)
+        .masjid
+        .geoLocation
+        .geoPoint
+        .latitude;
+    final long = Provider.of<MasjidProvider>(context, listen: false)
+        .masjid
+        .geoLocation
+        .geoPoint
+        .longitude;
+    print('Lat:$lat, long: $long');
+    mosqueLocationMarker = Marker(
+      icon: masjidPinIcon,
+      position: LatLng(lat, long),
+      markerId: MarkerId('majidLocationPin'),
+      infoWindow: InfoWindow(title: 'Masjid Location'),
+    );
+    setState(() {
+      markers.add(mosqueLocationMarker);
+    });
   }
 
   _animateToCurrentLocation() async {
@@ -74,6 +94,37 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
     }
   }
 
+  _animateToMosqueLocation() async {
+    final status = await geoLocationHelper.isGpsEnabled();
+    if (!status) await _showTurnOnGpsAlert();
+    currentLocation = await geoLocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    final lat = Provider.of<MasjidProvider>(context, listen: false)
+        .masjid
+        .geoLocation
+        .geoPoint
+        .latitude;
+    final long = Provider.of<MasjidProvider>(context, listen: false)
+        .masjid
+        .geoLocation
+        .geoPoint
+        .longitude;
+    print(currentLocation);
+    if (currentLocation != null) {
+      setState(() {
+        gotCurrentLocation = true;
+        print('Current Location status: $gotCurrentLocation');
+      });
+      if (_controller != null) {
+        _controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: LatLng(lat, long), zoom: 17),
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _showTurnOnGpsAlert() async {
     await showDialog(
       context: context,
@@ -93,9 +144,10 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
     );
   }
 
-  _setCustomMapPins() async {
+  Future<void> _setCustomMapPins() async {
     masjidPinIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), 'assets/static_assets/masjid-pin.png');
+    setState(() {});
   }
 
   @override
@@ -133,7 +185,17 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
             backgroundColor: Colors.white,
             onPressed: _animateToCurrentLocation,
           ),
-        )
+        ),
+        Positioned(
+          bottom: 185,
+          right: 10,
+          child: FloatingActionButton(
+            child: Image.asset('assets/static_assets/masjid-pin.png',
+                width: 30, height: 30, fit: BoxFit.contain),
+            backgroundColor: Colors.white,
+            onPressed: _animateToMosqueLocation,
+          ),
+        ),
       ],
     );
   }
@@ -212,7 +274,11 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
             if (masjidProvider.locationAdded) {
               masjidProvider.masjid.geoLocation = GeoFirePoint(
                   masjidPinLocation.latitude, masjidPinLocation.longitude);
-              Navigator.pop(context);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MosqueDashboardScreen()),
+                  (r) => false);
             }
           },
         ),
