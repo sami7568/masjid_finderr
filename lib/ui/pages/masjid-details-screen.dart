@@ -7,6 +7,7 @@ import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-outlined-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
+import 'package:masjid_finder/ui/pages/edit-masjid-profile-screen.dart';
 import 'package:provider/provider.dart';
 
 class MasjidDetailsScreen extends StatelessWidget {
@@ -97,7 +98,14 @@ class MasjidDetailsScreen extends StatelessWidget {
                         Text('Edit Profile', style: blackBtnTS),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditMasjidProfileScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
