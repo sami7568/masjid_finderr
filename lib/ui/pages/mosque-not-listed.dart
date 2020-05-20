@@ -10,6 +10,18 @@ class MosqueNotListed extends StatefulWidget {
 }
 
 class _MosqueNotListedState extends State<MosqueNotListed> {
+  final gotData = false;
+  final masjidAdded = false;
+
+  @override
+  void initState() {
+    _getMasjidData();
+    super.initState();
+  }
+
+  _getMasjidData(){
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

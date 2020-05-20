@@ -24,8 +24,7 @@ class Masjid {
   Masjid.fromJson(masjidData) {
     this.name = masjidData['name'];
     this.address = masjidData['address'];
-    this.position = GeoFirePoint(
-        masjidData['position']['latitude'], masjidData['position']['latitude']);
+    this.position = masjidData[position];
     this.isJamiaMasjid = masjidData['isJamiaMasjid'];
     this.subscribers = masjidData['subscribers'];
     this.prayerTime = PrayerTime.fromJSON(masjidData['prayerTime']);
