@@ -1,13 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
 import 'dart:io';
+
+import 'package:provider/provider.dart';
 
 class FirestoreHelper {
   final _db = Firestore.instance;
   final _userCollection = 'users';
   final _imamCollection = 'imams';
   final _masjidCollection = 'masjid';
+  final _subscribersCollection = 'subscribers';
   final _registerMasjidCollection = 'registerMasjid';
   Stream<String> fcmStream;
 
@@ -126,12 +131,72 @@ class FirestoreHelper {
     try {
       final snapshot = await _db.collection('masjid').document(uid).get();
       if (snapshot != null)
-        return snapshot.data;
+        return Masjid.fromJson(snapshot);
       else
         return null;
     } catch (e) {
       print('Exception @getMasjid: $e');
       return null;
+    }
+  }
+
+  Future<List<Masjid>> getJamiaMasjidList() async {
+    try {
+      final snapshot = await _db
+          .collection(_masjidCollection)
+          .where('isJamiaMasjid', isEqualTo: true)
+          .limit(10)
+          .getDocuments();
+      print(
+          '@getJamiaMasjidList: Masjids count is ${snapshot.documents.length}');
+      if (snapshot.documents.length > 0) {
+        return snapshot.documents.map((masjidData) {
+          return Masjid.fromJson(masjidData);
+        }).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Exception @getJamiaMasjidList: $e');
+      return [];
+    }
+  }
+
+  Future<List<DocumentSnapshot>> getSubscribers(uid) async {
+    print('@getSubscribers');
+    try {
+      final snapshot = await _db
+          .collection(_subscribersCollection)
+          .where('masjidId', isEqualTo: uid)
+          .getDocuments();
+      return snapshot.documents;
+    } catch (e) {
+      print('Exception @getSubscribers: $e');
+      return [];
+    }
+  }
+
+  Future<bool> followMosque({Masjid masjid, FirebaseUser user}) async {
+    try {
+      final snapshot = await _db
+          .collection(_subscribersCollection)
+          .where('userId', isEqualTo: user.uid)
+          .where('masjidId', isEqualTo: masjid.firestoreId)
+          .getDocuments();
+      if (snapshot.documents.length == 0) {
+        await _db.collection(_subscribersCollection).add({
+          'userId': user.uid,
+          'masjidId': masjid.firestoreId,
+          'fullName': user.displayName,
+//          'address': 'User address',
+        });
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Exceptin @followMosque: $e');
+      return false;
     }
   }
 }

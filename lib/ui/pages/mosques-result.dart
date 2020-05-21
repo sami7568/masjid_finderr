@@ -4,9 +4,11 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
+import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
+import 'package:provider/provider.dart';
 
 import 'mosque-list-item.dart';
 
@@ -31,7 +33,7 @@ class _MosquesResultState extends State<MosquesResult> {
         desiredAccuracy: LocationAccuracy.best,
         locationPermissionLevel: GeolocationPermission.location);
 
-    print('Current Location: $currentLocation');
+    print('@getNearbyMosquesData Current Location: $currentLocation');
 
     ///
     /// If unable to get current Location
@@ -52,7 +54,7 @@ class _MosquesResultState extends State<MosquesResult> {
     ///
     final center =
         GeoFirePoint(currentLocation.latitude, currentLocation.longitude);
-    final double radius = 2;
+    final double radius = 10;
     final geoFlutterFire = Geoflutterfire();
     final ref = Firestore.instance.collection('masjid');
 
@@ -62,6 +64,7 @@ class _MosquesResultState extends State<MosquesResult> {
           .within(center: center, radius: radius, field: 'position');
       stream.listen(
         (List<DocumentSnapshot> docsList) {
+          print('Masjid count: ${docsList.length}');
           gotData = true;
           if (docsList.length == 0) {
             noData = true;
@@ -142,6 +145,8 @@ class _MosquesResultState extends State<MosquesResult> {
                     children: _mosquesList.map<Widget>((masjidInfo) {
                       return GestureDetector(
                         onTap: () {
+                          Provider.of<MasjidProvider>(context, listen: false)
+                              .masjid = masjidInfo;
                           Navigator.push(
                             context,
                             MaterialPageRoute(

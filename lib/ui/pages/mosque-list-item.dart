@@ -17,6 +17,7 @@ class MosqueListItem extends StatelessWidget {
       this.info,
       this.follow = false,
       this.onFollowPressed});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,54 +39,59 @@ class MosqueListItem extends StatelessWidget {
       child: Row(
         children: <Widget>[
           //Mosque Icon
-          Container(
-            margin: EdgeInsets.only(left: 19),
-            height: 49,
-            width: 45,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/static_assets/mosque-icon.png"),
+          Flexible(
+            flex: 1,
+            child: Container(
+              margin: EdgeInsets.only(left: 19),
+              height: 49,
+              width: 45,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/static_assets/mosque-icon.png"),
+                ),
               ),
             ),
           ),
 
           //Mosque Info
-          Container(
-            margin: EdgeInsets.only(left: 27),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    info.name,
-                    style: mainBodyTextStyle,
+          Flexible(
+            flex: 3,
+            child: Container(
+              margin: EdgeInsets.only(left: 27),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      info.name,
+                      style: mainBodyTextStyle,
+                    ),
                   ),
-                ),
-                Container(
-                  child: Text(
-                    info.address,
-                    style: subBodyLightTextStyle,
+                  Container(
+                    child: Text(info.address, style: subBodyLightTextStyle),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-
-          Spacer(),
+          SizedBox(width: 10),
           follow == true
-              ? Container(
-                  margin: EdgeInsets.only(right: 16),
-                  child: CustomBlackButton(
-                    child: Text(
-                      "FOLLOW",
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                          color: Colors.white),
+              ? Flexible(
+                  flex: 2,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 16),
+                    child: CustomBlackButton(
+                      child: Text(
+                        "FOLLOW",
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                            color: Colors.white),
+                      ),
+                      onPressed: onFollowPressed,
                     ),
-                    onPressed: onFollowPressed,
                   ),
                 )
               : Container(),

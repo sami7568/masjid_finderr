@@ -13,6 +13,10 @@ import 'package:provider/provider.dart';
 import 'package:masjid_finder/ui/pages/location-access.dart';
 
 class UserLoginScreen extends StatefulWidget {
+  final bool needPop;
+
+  UserLoginScreen({this.needPop});
+
   @override
   _UserLoginScreenState createState() => _UserLoginScreenState();
 }
@@ -104,11 +108,16 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                     isInProgress = false;
                   });
                   if (authProvider.status == AuthResultStatus.successful) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LocationAccess()),
-                        (r) => false);
+                    if (widget.needPop) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LocationAccess()),
+                          (r) => false);
+                    }
                   } else {
                     final errorMsg =
                         AuthExceptionHandler.generateExceptionMessage(

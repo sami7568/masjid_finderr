@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 
 class SubscriberListItem extends StatelessWidget {
+  final subscriberData;
+
+  SubscriberListItem({this.subscriberData});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,14 +49,14 @@ class SubscriberListItem extends StatelessWidget {
               ///Name
               Container(
                 child: Text(
-                  "Atif Ur Rahman",
+                  subscriberData['fullName'] ?? '',
                   style: mainBodyTextStyle,
                 ),
               ),
               //Address
               Container(
                 child: Text(
-                  "UET Peshawar",
+                  subscriberData['address'] ?? '',
                   style: subBodyLightTextStyle,
                 ),
               ),
