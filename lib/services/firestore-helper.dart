@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
-import 'package:masjid_finder/providers/auth-provider.dart';
 import 'dart:io';
 
-import 'package:provider/provider.dart';
 
 class FirestoreHelper {
   final _db = Firestore.instance;

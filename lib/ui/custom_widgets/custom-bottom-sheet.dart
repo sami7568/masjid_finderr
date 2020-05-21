@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
+import 'package:masjid_finder/providers/masjid-provider.dart';
+import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
+import 'package:provider/provider.dart';
 
 import 'cusom-black-button.dart';
 import 'cusom-black-outlined-button.dart';
@@ -13,59 +16,6 @@ class CustomBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    return BottomSheet(
-//      enableDrag: true,
-//      shape: RoundedRectangleBorder(
-//        borderRadius: BorderRadius.only(
-//          topLeft: Radius.circular(20),
-//          topRight: Radius.circular(20),
-//        ),
-//      ),
-//      backgroundColor: Colors.red,
-//      builder: (context) => _contents(),
-//      onClosing: () {},
-//    );
-//  }
-//
-//  _contents() {
-//    return Container(
-//      height: 200,
-//      decoration: BoxDecoration(
-//        color: Colors.red,
-//        borderRadius: BorderRadius.only(
-//          topRight: Radius.circular(20),
-//          topLeft: Radius.circular(20),
-//        ),
-//      ),
-//      child: Column(
-//        children: <Widget>[
-//          Padding(
-//            padding: const EdgeInsets.fromLTRB(150, 10, 150, 30),
-//            child: Divider(thickness: 4, color: Colors.grey),
-//          ),
-//          Row(
-//            children: <Widget>[
-//              Column(
-//                children: <Widget>[
-//                  Text(masjidData.name ?? '', style: subHeadingTextStyle),
-//                  Text(masjidData.address ?? '', style: mainBodyTextStyle),
-//                ],
-//              ),
-//              CustomBlackButton(
-//                child: Text('DETAILS', style: blackBtnTS),
-//                onPressed: () {},
-//              ),
-//              CustomBlackOutlinedButton(
-//                child: Text('DIRECTIONS',
-//                    style: blackBtnTS.copyWith(color: Colors.black)),
-//                onPressed: () {},
-//              )
-//            ],
-//          )
-//        ],
-//      ),
-//    );
-
     return Container(
       height: 120,
       color: Color(0xFF757575),
@@ -100,7 +50,14 @@ class CustomBottomSheet extends StatelessWidget {
                 SizedBox(width: 20),
                 CustomBlackButton(
                   child: Text('DETAILS', style: blackBtnTS),
-                  onPressed: () {},
+                  onPressed: () {
+                    Provider.of<MasjidProvider>(context, listen: false).masjid =
+                        masjidData;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MasjidDetailsScreen()));
+                  },
                 ),
                 CustomBlackOutlinedButton(
                   child: Text('DIRECTIONS',

@@ -9,7 +9,6 @@ import 'package:masjid_finder/ui/custom_widgets/cusom-black-outlined-button.dart
 import 'package:masjid_finder/ui/custom_widgets/custom-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/login-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
-import 'package:masjid_finder/ui/pages/edit-profile-screen.dart';
 import 'package:provider/provider.dart';
 
 class MasjidDetailsScreen extends StatelessWidget {
@@ -103,7 +102,8 @@ class MasjidDetailsScreen extends StatelessWidget {
                     },
                   ),
                   Text(
-                    '${masjidProvider.masjid.subscribers} subscribers' ?? '0 subscribers',
+                    '${masjidProvider.masjid.subscribers} subscribers' ??
+                        '0 subscribers',
                     style: subscribersTS,
                   )
                 ],

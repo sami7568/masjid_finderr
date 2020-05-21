@@ -8,6 +8,7 @@ import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
+import 'package:masjid_finder/ui/pages/show-mosques-on-map-screen.dart';
 import 'package:provider/provider.dart';
 
 import 'mosque-list-item.dart';
@@ -172,6 +173,14 @@ class _MosquesResultState extends State<MosquesResult> {
               child: blackButton(
                   text: "SHOW ON MAP",
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ShowMosquesOnMapScreen(
+                          masjids: _mosquesList,
+                        ),
+                      ),
+                    );
 //                Provider.of<AuthProvider>(context, listen: false).logout();
                   }),
             )
