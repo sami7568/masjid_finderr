@@ -5,7 +5,7 @@ import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
 
 class MasjidProvider extends ChangeNotifier {
-  Masjid masjid = Masjid(geoLocation: GeoFirePoint(null, null));
+  Masjid masjid = Masjid(position: GeoFirePoint(null, null));
   bool locationAdded = false;
 
   MasjidProvider() {

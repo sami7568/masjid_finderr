@@ -50,12 +50,12 @@ class _UpdateMosqueOnMapScreenState extends State<UpdateMosqueOnMapScreen> {
     await _setCustomMapPins();
     final lat = Provider.of<MasjidProvider>(context, listen: false)
         .masjid
-        .geoLocation
+        .position
         .geoPoint
         .latitude;
     final long = Provider.of<MasjidProvider>(context, listen: false)
         .masjid
-        .geoLocation
+        .position
         .geoPoint
         .longitude;
     print('Lat:$lat, long: $long');
@@ -101,12 +101,12 @@ class _UpdateMosqueOnMapScreenState extends State<UpdateMosqueOnMapScreen> {
         desiredAccuracy: LocationAccuracy.best);
     final lat = Provider.of<MasjidProvider>(context, listen: false)
         .masjid
-        .geoLocation
+        .position
         .geoPoint
         .latitude;
     final long = Provider.of<MasjidProvider>(context, listen: false)
         .masjid
-        .geoLocation
+        .position
         .geoPoint
         .longitude;
     print(currentLocation);
@@ -272,7 +272,7 @@ class _UpdateMosqueOnMapScreenState extends State<UpdateMosqueOnMapScreen> {
           ),
           onPressed: () {
             if (masjidProvider.locationAdded) {
-              masjidProvider.masjid.geoLocation = GeoFirePoint(
+              masjidProvider.masjid.position = GeoFirePoint(
                   masjidPinLocation.latitude, masjidPinLocation.longitude);
               Navigator.pushAndRemoveUntil(
                   context,

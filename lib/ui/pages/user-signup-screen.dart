@@ -11,6 +11,10 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class UserSignUpScreen extends StatefulWidget {
+  final bool needPop;
+
+  UserSignUpScreen({this.needPop = false});
+
   @override
   _UserSignUpScreenState createState() => _UserSignUpScreenState();
 }
@@ -109,10 +113,16 @@ class _UserSignUpScreenState extends State<UserSignUpScreen> {
                   isInProgress = false;
                 });
                 if (authProvider.status == AuthResultStatus.successful) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => LocationAccess()),
-                      (r) => false);
+                  if (widget.needPop) {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationAccess()),
+                        (r) => false);
+                  }
                 } else {
                   final errorMsg =
                       AuthExceptionHandler.generateExceptionMessage(

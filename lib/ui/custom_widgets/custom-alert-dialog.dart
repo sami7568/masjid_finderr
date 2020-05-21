@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomAlertDialog extends StatelessWidget {
   final iconUrl;
   final title;
-  Widget content;
+  final Widget content;
   final actions;
 
   CustomAlertDialog({this.iconUrl, this.title, this.content, this.actions});

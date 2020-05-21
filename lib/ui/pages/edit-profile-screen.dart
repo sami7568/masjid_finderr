@@ -8,16 +8,10 @@ import 'package:masjid_finder/ui/custom_widgets/custom-squre-textfield.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
 import 'package:masjid_finder/ui/pages/add-masjid-screen3.dart';
 import 'package:masjid_finder/ui/pages/pin-mosque-on-map-screen.dart';
+import 'package:masjid_finder/ui/pages/update-mosque-on-map-screen.dart';
 import 'package:provider/provider.dart';
 
-class AddMasjidScreen2 extends StatefulWidget {
-  @override
-  _AddMasjidScreen2State createState() => _AddMasjidScreen2State();
-}
-
-class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
-  bool locationAdded = false;
-
+class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,24 +64,40 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'List your masjid',
+              'Edit Masjid’s Profile',
               style: subHeadingTextStyle.copyWith(color: mainThemeColor),
             ),
-            SizedBox(height: 12),
-            Text(
-              'Step 2 of 3',
-              style: TextStyle(
-                  color: Color(0xFF707070),
-                  fontFamily: 'Poppins',
-                  fontSize: 11),
-            ),
             SizedBox(height: 32),
+            CustomSquareTextField(
+              label: 'Name',
+              inputType: TextInputType.number,
+              controller:
+                  TextEditingController(text: masjidProvider.masjid.name),
+              onChange: (val) {
+                masjidProvider.masjid.position.latitude = double.parse(val);
+                print(masjidProvider.masjid.position.latitude);
+              },
+            ),
+            CustomSquareTextField(
+              label: 'Address',
+              inputType: TextInputType.number,
+              controller:
+                  TextEditingController(text: masjidProvider.masjid.address),
+              onChange: (val) {
+                masjidProvider.masjid.position.latitude = double.parse(val);
+                print(masjidProvider.masjid.position.latitude);
+              },
+            ),
             Row(
               children: <Widget>[
                 Expanded(
                   child: CustomSquareTextField(
                     hint: '3.9769755',
                     label: 'Latitude',
+                    controller: TextEditingController(
+                        text: masjidProvider
+                            .masjid.position.geoPoint.latitude
+                            .toString()),
                     inputType: TextInputType.number,
                     onChange: (val) {
                       masjidProvider.masjid.position.latitude =
@@ -101,6 +111,10 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
                   child: CustomSquareTextField(
                     hint: '71.2852823',
                     label: 'Longitude',
+                    controller: TextEditingController(
+                        text: masjidProvider
+                            .masjid.position.geoPoint.longitude
+                            .toString()),
                     inputType: TextInputType.number,
                     onChange: (val) {
                       masjidProvider.masjid.position.longitude =
@@ -118,7 +132,7 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    'Add Location',
+                    'Update Location',
                     style: blackBtnTS.copyWith(color: Colors.white),
                   ),
                 ),
@@ -158,7 +172,7 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
               ),
             ),
             Text(
-              'Pin your mosque on the map',
+              'Update your mosque on the map',
               style: subHeadingTextStyle.copyWith(color: darkGreyColor),
             ),
             SizedBox(height: 25),
@@ -181,7 +195,7 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PinMosqueOnMapScreen(),
+                    builder: (context) => UpdateMosqueOnMapScreen(),
                   ),
                 );
               },
@@ -199,7 +213,7 @@ class _AddMasjidScreen2State extends State<AddMasjidScreen2> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 18),
           child: Text(
-            'Continue',
+            'Update Profile',
             style: blackBtnTS,
           ),
         ),

@@ -8,6 +8,7 @@ import 'package:masjid_finder/ui/custom_widgets/admin-app-bar.dart';
 import 'package:masjid_finder/ui/custom_widgets/mosque-listed-tile.dart';
 import 'package:masjid_finder/ui/custom_widgets/salam-card.dart';
 import 'package:masjid_finder/ui/pages/add-masjid-screen1.dart';
+import 'package:masjid_finder/ui/pages/edit-masjid-profile-screen.dart';
 import 'package:masjid_finder/ui/pages/follow-a-mosque-screen.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
 import 'package:masjid_finder/ui/pages/mosque-subscriebrs-list.dart';
@@ -95,7 +96,7 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MasjidDetailsScreen(),
+                      builder: (context) => EditMasjidProfileScreen(),
                     ),
                   );
                 },

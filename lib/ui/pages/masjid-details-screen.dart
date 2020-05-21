@@ -3,11 +3,13 @@ import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/providers/masjid-provider.dart';
+import 'package:masjid_finder/services/firestore-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-outlined-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-alert-dialog.dart';
+import 'package:masjid_finder/ui/custom_widgets/login-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
-import 'package:masjid_finder/ui/pages/edit-masjid-profile-screen.dart';
+import 'package:masjid_finder/ui/pages/edit-profile-screen.dart';
 import 'package:provider/provider.dart';
 
 class MasjidDetailsScreen extends StatelessWidget {
@@ -76,14 +78,11 @@ class MasjidDetailsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                               border: Border.all(color: orangeColor, width: 2)),
                           child: Text(
-                            'Jamia Masjid',
+                            masjidProvider.masjid.name,
                             style: jamiaMasjidTS,
                           ),
                         )
-                      : null,
-                  Text('Address', style: subHeadingTextStyle),
-                  SizedBox(height: 10),
-                  Text(masjidProvider.masjid.address, style: mainBodyTextStyle)
+                      : Container(),
                 ],
               ),
               Column(
@@ -93,20 +92,20 @@ class MasjidDetailsScreen extends StatelessWidget {
                   CustomBlackButton(
                     child: Row(
                       children: <Widget>[
-//                      Icon(Icons.notifications, color: Colors.white, size: 17),
-//                      SizedBox(width: 4),
-                        Text('Edit Profile', style: blackBtnTS),
+                        Icon(Icons.notifications,
+                            color: Colors.white, size: 17),
+                        SizedBox(width: 4),
+                        Text('subscribe', style: blackBtnTS),
                       ],
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditMasjidProfileScreen(),
-                        ),
-                      );
+                      _followMosque(context);
                     },
                   ),
+                  Text(
+                    '${masjidProvider.masjid.subscribers} subscribers' ?? '0 subscribers',
+                    style: subscribersTS,
+                  )
                 ],
               ),
             ],
@@ -116,11 +115,53 @@ class MasjidDetailsScreen extends StatelessWidget {
     );
   }
 
+  _followMosque(context) async {
+    if (Provider.of<AuthProvider>(context, listen: false).isLogin) {
+      final user = Provider.of<AuthProvider>(context, listen: false).user;
+      final masjid = Provider.of<MasjidProvider>(context, listen: false).masjid;
+      final isFollowed =
+          await FirestoreHelper().followMosque(masjid: masjid, user: user);
+      if (isFollowed) {
+        print('success');
+      } else {
+        print('failed');
+      }
+    } else {
+      _showLoginAlert(context);
+    }
+  }
+
+  _showLoginAlert(context) {
+    showDialog(context: context, child: CustomLoginAlert());
+  }
+
   _prayerTimings() {
     return Consumer<MasjidProvider>(
       builder: (context, masjidProvider, child) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(25, 27, 30, 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text('Address', style: subHeadingTextStyle),
+                    SizedBox(height: 10),
+                    Text(masjidProvider.masjid.address,
+                        style: mainBodyTextStyle),
+                  ],
+                ),
+                CustomBlackOutlinedButton(
+                  child: Text(
+                    'Direction',
+                    style: blackBtnTS.copyWith(color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 25, top: 15),
             child: Text('Change Prayer Timings', style: subHeadingTextStyle),

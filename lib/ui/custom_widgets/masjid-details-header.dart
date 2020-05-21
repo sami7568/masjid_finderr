@@ -44,10 +44,7 @@ class MasjidDetailsHeader extends StatelessWidget {
           FlatButton(
             child: Text(
               subscribersCount ?? '0' + ' subscribers',
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: subscribersBtnColor),
+              style: subscribersTS,
             ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3),
