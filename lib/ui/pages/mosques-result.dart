@@ -5,14 +5,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
+import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
+import 'package:masjid_finder/ui/custom_widgets/blue-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
+import 'package:masjid_finder/ui/pages/my-subscriptions-screen.dart';
 import 'package:masjid_finder/ui/pages/show-mosques-on-map-screen.dart';
 import 'package:provider/provider.dart';
 
-import 'mosque-list-item.dart';
+import '../custom_widgets/mosque-list-item.dart';
 
 class MosquesResult extends StatefulWidget {
   @override
@@ -47,7 +50,10 @@ class _MosquesResultState extends State<MosquesResult> {
       if (status) {
         _showPermissionsAlert();
       } else
-        geoLocatorHelper.enableGps();
+        await geoLocatorHelper.enableGps();
+      currentLocation = await Geolocator().getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best,
+          locationPermissionLevel: GeolocationPermission.location);
       return;
     }
 
@@ -154,10 +160,7 @@ class _MosquesResultState extends State<MosquesResult> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  MasjidDetailsScreen(
-                                      currentLocation: LatLng(
-                                          currentLocation.latitude,
-                                          currentLocation.longitude)),
+                                  MasjidDetailsScreen(),
                             ),
                           );
                         },
@@ -188,7 +191,23 @@ class _MosquesResultState extends State<MosquesResult> {
                     );
 //                Provider.of<AuthProvider>(context, listen: false).logout();
                   }),
-            )
+            ),
+            Provider.of<AuthProvider>(context, listen: false).isLogin
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(12, 5, 12, 12),
+                    child: blueButton(
+                        text: "MY SUBSCRIPTIONS",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MySubscriptionsScreen(),
+                            ),
+                          );
+//                Provider.of<AuthProvider>(context, listen: false).logout();
+                        }),
+                  )
+                : Container(),
           ],
         ),
       ),

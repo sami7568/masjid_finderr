@@ -4,7 +4,7 @@ import 'package:masjid_finder/models/masjid-model.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/admin-app-bar.dart';
 
-import 'mosque-list-item.dart';
+import '../custom_widgets/mosque-list-item.dart';
 
 class FollowAMosqueScreen extends StatefulWidget {
   @override

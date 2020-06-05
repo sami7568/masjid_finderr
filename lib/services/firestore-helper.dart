@@ -124,7 +124,7 @@ class FirestoreHelper {
     }
   }
 
-  getMasjid(uid) async {
+  Future<Masjid> getMasjid(uid) async {
     try {
       final snapshot = await _db.collection('masjid').document(uid).get();
       if (snapshot != null)
@@ -182,6 +182,8 @@ class FirestoreHelper {
         'userId': user.uid,
         'masjidId': masjid.firestoreId,
         'fullName': user.displayName,
+        'mosqueName': masjid.name,
+        'mosqueAddress': masjid.address,
       });
     } catch (e) {
       print('Exceptin @followMosque: $e');
@@ -215,6 +217,19 @@ class FirestoreHelper {
     } catch (e) {
       print('Exceptin @followMosque: $e');
       return false;
+    }
+  }
+
+  Future<List<DocumentSnapshot>> getSubscribedMosques({uid}) async {
+    try {
+      final docsList = await _db
+          .collection(_subscribersCollection)
+          .where('userId', isEqualTo: uid)
+          .getDocuments();
+      return docsList.documents;
+    } catch (e) {
+      print('Exceptin @followMosque: $e');
+      return [];
     }
   }
 }

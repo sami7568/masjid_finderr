@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
@@ -6,18 +7,20 @@ import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/directions-helper.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
+import 'package:masjid_finder/services/geolocator-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-black-outlined-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/cusom-blue-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/custom-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/login-alert-dialog.dart';
 import 'package:masjid_finder/ui/custom_widgets/logo.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class MasjidDetailsScreen extends StatefulWidget {
-  final LatLng currentLocation;
-
-  MasjidDetailsScreen({this.currentLocation});
+//  final LatLng currentLocation;
+//
+//  MasjidDetailsScreen({this.currentLocation});
 
   @override
   _MasjidDetailsScreenState createState() => _MasjidDetailsScreenState();
@@ -26,6 +29,8 @@ class MasjidDetailsScreen extends StatefulWidget {
 class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
   bool isFollowed = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Position currentLocation;
+  bool showProgressHud = false;
 
   @override
   void initState() {
@@ -46,14 +51,17 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: _body(context),
+    return ModalProgressHUD(
+      inAsyncCall: showProgressHud,
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: _body(context),
+          ),
         ),
+        backgroundColor: greyBgColor,
       ),
-      backgroundColor: greyBgColor,
     );
   }
 
@@ -213,9 +221,17 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
                     'Direction',
                     style: blackBtnTS.copyWith(color: Colors.black),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    setState(() {
+                      showProgressHud = true;
+                    });
+                    await _getCurrentLocation();
+                    setState(() {
+                      showProgressHud = true;
+                    });
                     DirectionsHelper().navigate(
-                        origin: widget.currentLocation,
+                        origin: LatLng(currentLocation.latitude,
+                            currentLocation.longitude),
                         destination: LatLng(
                             masjidProvider.masjid.position.geoPoint.latitude,
                             masjidProvider.masjid.position.geoPoint.longitude));
@@ -473,5 +489,42 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(content),
     ));
+  }
+
+  _getCurrentLocation() async {
+    currentLocation = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        locationPermissionLevel: GeolocationPermission.location);
+
+    print('@getNearbyMosquesData Current Location: $currentLocation');
+
+    ///
+    /// If unable to get current Location
+    ///
+    if (currentLocation == null) {
+      print('Current Location is null');
+      final status = await GeoLocatorHelper().isGpsEnabled();
+      if (status) {
+        _showPermissionsAlert();
+      } else
+        await GeoLocatorHelper().enableGps();
+      currentLocation = await Geolocator().getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best,
+          locationPermissionLevel: GeolocationPermission.location);
+      return;
+    }
+  }
+
+  _showPermissionsAlert() {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Location Permissions disabled'),
+            content: Text(
+                'Please turn on Location Permissions in settings>Apps>MasjidFinder>Permissions to access nearby Locations'),
+          );
+        });
   }
 }
