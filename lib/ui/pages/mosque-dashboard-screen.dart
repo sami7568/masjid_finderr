@@ -35,7 +35,11 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
         .getMasjid(Provider.of<AuthProvider>(context, listen: false).user.uid);
     if (masjidData != null) {
       Provider.of<MasjidProvider>(context, listen: false).masjid = masjidData;
-      contents = _mosqueListedContents();
+      if (masjidData.isJamiaMasjid) {
+        contents = _jamiaMosqueListedContents();
+      } else {
+        contents = _mosqueListedContents();
+      }
     } else {
       contents = _mosqueNotListedContents();
     }
@@ -139,6 +143,82 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  _jamiaMosqueListedContents() {
+    return Column(
+      children: <Widget>[
+        ///first and second tile
+        Container(
+          margin: EdgeInsets.all(16),
+          child: Row(
+            children: <Widget>[
+              MosqueListedTile(
+                icon: "timing-icon",
+                text: "Add prayer timings and other details.",
+                buttonText: "Masjid Profile",
+                onButtonPressed: () {
+                  print('goto profile screen');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditMasjidProfileScreen(),
+                    ),
+                  );
+                },
+              ),
+              Spacer(),
+              MosqueListedTile(
+                icon: "followers-icon",
+                text: "View people who follow your masjid.",
+                buttonText: "View Subscribers",
+                onButtonPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MosqueSubscribersList()),
+                  );
+                },
+              ),
+//              MosqueListedTile(
+//                icon: "masjid-icon",
+//                text: "Synchronise time with a Jamia Masjid.",
+//                buttonText: "Follow Masjid",
+//                onButtonPressed: () {
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(
+//                      builder: (context) => FollowAMosqueScreen(),
+//                    ),
+//                  );
+//                },
+//              ),
+            ],
+          ),
+        ),
+
+        ///third tile
+//        Container(
+//          margin: EdgeInsets.all(16),
+//          child: Row(
+//            children: <Widget>[
+//              MosqueListedTile(
+//                icon: "followers-icon",
+//                text: "View people who follow your masjid.",
+//                buttonText: "View Subscribers",
+//                onButtonPressed: () {
+//                  Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                          builder: (context) => MosqueSubscribersList()));
+//                },
+//              ),
+//              Spacer(),
+//            ],
+//          ),
+//        ),
       ],
     );
   }

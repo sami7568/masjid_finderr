@@ -232,4 +232,46 @@ class FirestoreHelper {
       return [];
     }
   }
+
+  Future<void> followJamiaMasjid(
+      {jamiaMasjidId, followerMasjidId, followerMasjidName}) async {
+    print('@followJamiaMasjid');
+    try {
+      await _db
+          .collection(_masjidCollection)
+          .document(jamiaMasjidId)
+          .collection('followers')
+          .document(followerMasjidId)
+          .setData(
+        {
+          'followerMasjidId': followerMasjidId,
+          'followerMasjidName': followerMasjidName,
+        },
+      );
+    } catch (e) {
+      print('Exceptin @follwoJamiaMasjid: $e');
+    }
+  }
+
+  Future<void> setIsFollowing({docId}) async {
+    try {
+      await _db
+          .collection(_masjidCollection)
+          .document(docId)
+          .updateData({'isFollowing': true});
+    } catch (e) {
+      print('Exceptin @followMosque: $e');
+    }
+  }
+
+  Future<void> unsetFollowing({docId}) async {
+    try {
+      await _db
+          .collection(_masjidCollection)
+          .document(docId)
+          .updateData({'isFollowing': false});
+    } catch (e) {
+      print('Exceptin @followMosque: $e');
+    }
+  }
 }
