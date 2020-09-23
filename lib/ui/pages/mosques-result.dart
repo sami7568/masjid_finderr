@@ -63,7 +63,7 @@ class _MosquesResultState extends State<MosquesResult> {
     ///
     final center =
         GeoFirePoint(currentLocation.latitude, currentLocation.longitude);
-    final double radius = 6;
+    final double radius = 2;
     final geoFlutterFire = Geoflutterfire();
     final ref = Firestore.instance.collection('masjid');
 
