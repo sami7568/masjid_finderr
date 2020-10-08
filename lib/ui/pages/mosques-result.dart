@@ -131,8 +131,9 @@ class _MosquesResultState extends State<MosquesResult> {
                 ),
                 color: mainThemeColor,
               ),
-              Provider.of<AuthProvider>(context).isLogin
-                  ? ListTile(
+//              Provider.of<AuthProvider>(context).isLogin
+//                  ?
+              ListTile(
                       title: Text('Logout'),
                       onTap: () {
                         Provider.of<AuthProvider>(context, listen: false)
@@ -144,7 +145,7 @@ class _MosquesResultState extends State<MosquesResult> {
                             (route) => false);
                       },
                     )
-                  : Container(),
+//                  : Container(),
             ],
           ),
         ),

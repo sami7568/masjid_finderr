@@ -40,12 +40,12 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
     _animateToCurrentLocation();
     _setCustomMapPins();
     initialCameraPosition = CameraPosition(target: baseLocation, zoom: 15);
-    dummyMarker = Marker(
-      icon: masjidPinIcon,
-      position: baseLocation,
-      markerId: MarkerId(baseLocation.toString()),
-//      onTap: _showBottomSheet,
-    );
+//    dummyMarker = Marker(
+//      icon: masjidPinIcon,
+//      position: baseLocation,
+//      markerId: MarkerId(baseLocation.toString()),
+////      onTap: _showBottomSheet,
+//    );
 //    markers.add(dummyMarker);
     super.initState();
   }
@@ -59,6 +59,15 @@ class _PinMosqueOnMapScreenState extends State<PinMosqueOnMapScreen> {
     if (currentLocation != null) {
       setState(() {
         gotCurrentLocation = true;
+        markers.add(
+          Marker(
+            markerId: MarkerId('user_location'),
+            position:
+                LatLng(currentLocation.latitude, currentLocation.longitude),
+            infoWindow: InfoWindow(title: 'Your current location'),
+            draggable: true,
+          ),
+        );
         print('Current Location status: $gotCurrentLocation');
       });
       if (_controller != null) {

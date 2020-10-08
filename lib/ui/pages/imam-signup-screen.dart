@@ -153,10 +153,11 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ImamLoginScreen()));
+                            builder: (context) => ImamLoginScreen()),
+                        (route) => false);
                   }),
             ],
           )

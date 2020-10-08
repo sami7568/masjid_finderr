@@ -1,3 +1,4 @@
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
@@ -5,6 +6,7 @@ import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/firestore-helper.dart';
 import 'package:masjid_finder/ui/custom_widgets/add-masjid-card.dart';
 import 'package:masjid_finder/ui/custom_widgets/admin-app-bar.dart';
+import 'package:masjid_finder/ui/custom_widgets/grid-tile.dart';
 import 'package:masjid_finder/ui/custom_widgets/mosque-listed-tile.dart';
 import 'package:masjid_finder/ui/custom_widgets/salam-card.dart';
 import 'package:masjid_finder/ui/pages/add-masjid-screen1.dart';
@@ -180,6 +182,20 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
                     MaterialPageRoute(
                         builder: (context) => MosqueSubscribersList()),
                   );
+                },
+              ),
+              Spacer(),
+              MyGridTile(
+                text: "Open Salat Panel App",
+                buttonText: "Open App",
+                onButtonPressed: () async {
+                  if (await DeviceApps.isAppInstalled(
+                      'pk.com.systemsintegration.panelconfigure')) {
+                    DeviceApps.openApp(
+                        'pk.com.systemsintegration.panelconfigure');
+                  } else {
+                    print('App not found');
+                  }
                 },
               ),
 //              MosqueListedTile(
