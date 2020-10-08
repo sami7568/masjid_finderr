@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
 import 'package:masjid_finder/models/masjid-model.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
@@ -12,6 +13,7 @@ import 'package:masjid_finder/ui/custom_widgets/black-button.dart';
 import 'package:masjid_finder/ui/custom_widgets/blue-button.dart';
 import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
 import 'package:masjid_finder/ui/pages/my-subscriptions-screen.dart';
+import 'package:masjid_finder/ui/pages/prompt-screen.dart';
 import 'package:masjid_finder/ui/pages/show-mosques-on-map-screen.dart';
 import 'package:provider/provider.dart';
 
@@ -104,32 +106,72 @@ class _MosquesResultState extends State<MosquesResult> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Masjid Finder',
+          ),
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Container(
+                height: 100,
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'User App',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                color: mainThemeColor,
+              ),
+              Provider.of<AuthProvider>(context).isLogin
+                  ? ListTile(
+                      title: Text('Logout'),
+                      onTap: () {
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .logout();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PromptScreen()),
+                            (route) => false);
+                      },
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             //First tabbar
-            Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    print("Icon Pressed");
-                  },
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Center(
-                    child: Text("Masjid Finder"),
-                  ),
-                ),
-                Container(
-                  width: 45,
-                  height: 20,
-                )
-              ],
-            ),
+//            Row(
+//              children: <Widget>[
+//                IconButton(
+//                  icon: Icon(Icons.menu),
+//                  onPressed: () {
+//                    print("Icon Pressed");
+//                  },
+//                ),
+//                Expanded(
+//                  flex: 2,
+//                  child: Center(
+//                    child: Text("Masjid Finder"),
+//                  ),
+//                ),
+//                Container(
+//                  width: 45,
+//                  height: 20,
+//                )
+//              ],
+//            ),
 
             //Assalam o Alaikum
             Container(
