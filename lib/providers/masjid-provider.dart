@@ -57,4 +57,9 @@ class MasjidProvider extends ChangeNotifier {
   updateMasjid(uid) {
     FirestoreHelper().updateMasjid(masjid: this.masjid, uid: uid);
   }
+
+  clear() {
+    masjid = Masjid(position: GeoFirePoint(null, null));
+    locationAdded = false;
+  }
 }

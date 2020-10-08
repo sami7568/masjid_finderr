@@ -184,20 +184,7 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
                   );
                 },
               ),
-              Spacer(),
-              MyGridTile(
-                text: "Open Salat Panel App",
-                buttonText: "Open App",
-                onButtonPressed: () async {
-                  if (await DeviceApps.isAppInstalled(
-                      'pk.com.systemsintegration.panelconfigure')) {
-                    DeviceApps.openApp(
-                        'pk.com.systemsintegration.panelconfigure');
-                  } else {
-                    print('App not found');
-                  }
-                },
-              ),
+
 //              MosqueListedTile(
 //                icon: "masjid-icon",
 //                text: "Synchronise time with a Jamia Masjid.",
@@ -216,10 +203,10 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
         ),
 
         ///third tile
-//        Container(
-//          margin: EdgeInsets.all(16),
-//          child: Row(
-//            children: <Widget>[
+        Container(
+          margin: EdgeInsets.all(16),
+          child: Row(
+            children: <Widget>[
 //              MosqueListedTile(
 //                icon: "followers-icon",
 //                text: "View people who follow your masjid.",
@@ -232,9 +219,22 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
 //                },
 //              ),
 //              Spacer(),
-//            ],
-//          ),
-//        ),
+              MyGridTile(
+                text: "Open Salat Panel App",
+                buttonText: "Open App",
+                onButtonPressed: () async {
+                  if (await DeviceApps.isAppInstalled(
+                      'pk.com.systemsintegration.panelconfigure')) {
+                    DeviceApps.openApp(
+                        'pk.com.systemsintegration.panelconfigure');
+                  } else {
+                    print('App not found');
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

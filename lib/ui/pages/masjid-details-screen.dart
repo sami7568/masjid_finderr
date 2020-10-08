@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:masjid_finder/constants/colors.dart';
 import 'package:masjid_finder/constants/text-styles.dart';
+import 'package:masjid_finder/enums/user-type.dart';
 import 'package:masjid_finder/providers/auth-provider.dart';
 import 'package:masjid_finder/providers/masjid-provider.dart';
 import 'package:masjid_finder/services/directions-helper.dart';
@@ -129,33 +130,35 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  isFollowed
-                      ? CustomBlueButton(
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.notifications,
-                                  color: Colors.white, size: 17),
-                              SizedBox(width: 4),
-                              Text('Subscribed', style: blackBtnTS),
-                            ],
-                          ),
-                          onPressed: () {
-                            _unFollowMosque(context);
-                          },
-                        )
-                      : CustomBlackButton(
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.notifications,
-                                  color: Colors.white, size: 17),
-                              SizedBox(width: 4),
-                              Text('Subscribe', style: blackBtnTS),
-                            ],
-                          ),
-                          onPressed: () {
-                            _followMosque(context);
-                          },
-                        ),
+                  Provider.of<AuthProvider>(context).userType == UserType.imam
+                      ? isFollowed
+                          ? CustomBlueButton(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.notifications,
+                                      color: Colors.white, size: 17),
+                                  SizedBox(width: 4),
+                                  Text('Subscribed', style: blackBtnTS),
+                                ],
+                              ),
+                              onPressed: () {
+                                _unFollowMosque(context);
+                              },
+                            )
+                          : CustomBlackButton(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.notifications,
+                                      color: Colors.white, size: 17),
+                                  SizedBox(width: 4),
+                                  Text('Subscribe', style: blackBtnTS),
+                                ],
+                              ),
+                              onPressed: () {
+                                _followMosque(context);
+                              },
+                            )
+                      : Container(),
                   Text(
                     '${masjidProvider.masjid.subscribers ?? 0} subscribers',
                     style: subscribersTS,
@@ -227,7 +230,7 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
                     });
                     await _getCurrentLocation();
                     setState(() {
-                      showProgressHud = true;
+                      showProgressHud = false;
                     });
                     DirectionsHelper().navigate(
                         origin: LatLng(currentLocation.latitude,

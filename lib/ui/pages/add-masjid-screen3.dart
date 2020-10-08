@@ -209,6 +209,7 @@ class AddMasjidScreen3 extends StatelessWidget {
             final uid =
                 Provider.of<AuthProvider>(context, listen: false).user.uid;
             masjidProvider.createMasjidInDb(uid);
+            masjidProvider.clear();
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => MasjidDetailsScreen()));
 //            if (masjidProvider.locationAdded) {
