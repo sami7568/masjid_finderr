@@ -159,7 +159,7 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ImamPhoneVerificationScreen(
-                                        this.imam, verificationId)));
+                                        this.imam, verificationId, true)));
                       },
                       codeSent: _codeSent,
                       timeout: Duration(seconds: 15));

@@ -167,12 +167,11 @@ class _ImamLoginScreenState extends State<ImamLoginScreen> {
                       );
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {
-//                      Navigator.pushReplacement(
-//                          context,
-//                          MaterialPageRoute(
-//                              builder: (context) =>
-//                                  ImamPhoneVerificationScreen(
-//                                      this.imam, verificationId)));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ImamPhoneVerificationScreen(
+                                  this.imam, verificationId, false)));
                     },
                     codeSent: _codeSent,
                     timeout: Duration(seconds: 15));

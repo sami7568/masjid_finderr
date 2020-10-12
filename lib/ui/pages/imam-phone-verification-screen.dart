@@ -17,8 +17,9 @@ import 'package:provider/provider.dart';
 class ImamPhoneVerificationScreen extends StatefulWidget {
   final Imam imam;
   final String verificationId;
+  final bool isSignUp;
 
-  ImamPhoneVerificationScreen(this.imam, this.verificationId);
+  ImamPhoneVerificationScreen(this.imam, this.verificationId, this.isSignUp);
 
   @override
   _ImamPhoneVerificationScreenState createState() =>
@@ -121,7 +122,14 @@ class _ImamPhoneVerificationScreenState
                   final credentials = PhoneAuthProvider.getCredential(
                       verificationId: widget.verificationId,
                       smsCode: verificationCode);
-                  await authProvider.createImamAccount(this.imam, credentials);
+                  if (widget.isSignUp) {
+                    await authProvider.createImamAccount(
+                        this.imam, credentials);
+                  } else {
+                    await authProvider.login(
+                        credentials: credentials, isImam: true);
+                  }
+
                   setState(() {
                     isInProgress = false;
                   });
