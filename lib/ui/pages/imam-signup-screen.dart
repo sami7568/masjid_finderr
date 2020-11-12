@@ -12,7 +12,6 @@ import 'package:masjid_finder/ui/custom_widgets/custom-rounded-textfield.dart';
 import 'package:masjid_finder/ui/pages/imam-login-screen.dart';
 import 'package:masjid_finder/ui/pages/imam-phone-verification-screen.dart';
 import 'package:masjid_finder/ui/pages/mosque-not-listed.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class ImamSignUpScreen extends StatefulWidget {
@@ -32,25 +31,24 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ModalProgressHUD(
-        inAsyncCall: isInProgress,
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Container(
-                padding: EdgeInsets.only(left: 20, right: 20, top: 50),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: greyBgColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    AssetLogo('assets/static_assets/blue-logo.png'),
-                    _signUpForm(),
-                  ],
-                )),
-          ),
-        ),
-      ),
+      child: isInProgress
+          ? Center(child: CircularProgressIndicator())
+          : Scaffold(
+              body: SingleChildScrollView(
+                child: Container(
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 50),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: greyBgColor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        AssetLogo('assets/static_assets/blue-logo.png'),
+                        _signUpForm(),
+                      ],
+                    )),
+              ),
+            ),
     );
   }
 
@@ -108,7 +106,7 @@ class _ImamSignUpScreenState extends State<ImamSignUpScreen> {
                 onPressed: () async {
                   setState(() {
                     isInProgress = true;
-                    print('Show Progress Bar is true');
+                    print('Show Progress Bar is $isInProgress');
                   });
                   await FirebaseAuth.instance.verifyPhoneNumber(
                       phoneNumber: imam.contact,

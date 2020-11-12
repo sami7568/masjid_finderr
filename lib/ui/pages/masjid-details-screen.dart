@@ -35,6 +35,12 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
 
   @override
   void initState() {
+    _checkIfSubscribed();
+    super.initState();
+  }
+
+  _checkIfSubscribed() {
+    print('@checkIfSubscribed');
     if (Provider.of<AuthProvider>(context, listen: false).isLogin) {
       FirestoreHelper()
           .checkIfFollowed(
@@ -47,7 +53,6 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
         });
       });
     }
-    super.initState();
   }
 
   @override
@@ -182,7 +187,8 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
       });
       FirestoreHelper().followMosque(masjid: masjid, user: user);
     } else {
-      _showLoginAlert(context);
+      await showDialog(context: context, child: CustomLoginAlert());
+      _checkIfSubscribed();
     }
   }
 
@@ -196,9 +202,9 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
     FirestoreHelper().unFollowMosque(masjid: masjid, user: user);
   }
 
-  _showLoginAlert(context) {
-    showDialog(context: context, child: CustomLoginAlert());
-  }
+//  _showLoginAlert(context) async {
+//    await
+//  }
 
   _prayerTimings() {
     return Consumer<MasjidProvider>(
