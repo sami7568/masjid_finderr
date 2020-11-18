@@ -40,7 +40,7 @@ class MasjidDetailsHeader extends StatelessWidget {
           ),
           FlatButton(
             child: Text(
-              subscribersCount ?? '0' + ' subscribers',
+              '$subscribersCount' ?? '0' + ' subscribers',
               style: subscribersTS,
             ),
             shape: RoundedRectangleBorder(

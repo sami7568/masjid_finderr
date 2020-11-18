@@ -307,4 +307,13 @@ class FirestoreHelper {
       print('Exceptin @followMosque: $e');
     }
   }
+
+  addCustomNotification(message) async {
+    print('@addCustomNotification and message: $message');
+    final user = await FirebaseAuth.instance.currentUser();
+    _db.collection('custom_notifications').add({
+      'mosqueId': user.uid,
+      'message': message,
+    });
+  }
 }

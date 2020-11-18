@@ -211,6 +211,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
   logout() {
     _auth.signOut();
     notifyListeners();

@@ -11,10 +11,10 @@ import 'package:masjid_finder/ui/custom_widgets/mosque-listed-tile.dart';
 import 'package:masjid_finder/ui/custom_widgets/salam-card.dart';
 import 'package:masjid_finder/ui/pages/add-masjid-screen1.dart';
 import 'package:masjid_finder/ui/pages/edit-masjid-profile-screen.dart';
-import 'package:masjid_finder/ui/pages/follow-a-mosque-screen.dart';
-import 'package:masjid_finder/ui/pages/masjid-details-screen.dart';
 import 'package:masjid_finder/ui/pages/mosque-subscriebrs-list.dart';
 import 'package:provider/provider.dart';
+
+import 'custom_notification_page.dart';
 
 class MosqueDashboardScreen extends StatefulWidget {
   @override
@@ -109,28 +109,6 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
               ),
               Spacer(),
               MosqueListedTile(
-                icon: "masjid-icon",
-                text: "Synchronise time with a Jamia Masjid.",
-                buttonText: "Follow Masjid",
-                onButtonPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FollowAMosqueScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-
-        ///third tile
-        Container(
-          margin: EdgeInsets.all(16),
-          child: Row(
-            children: <Widget>[
-              MosqueListedTile(
                 icon: "followers-icon",
                 text: "View people who follow your masjid.",
                 buttonText: "View Subscribers",
@@ -141,7 +119,53 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
                           builder: (context) => MosqueSubscribersList()));
                 },
               ),
+//              MosqueListedTile(
+//                icon: "masjid-icon",
+//                text: "Synchronise time with a Jamia Masjid.",
+//                buttonText: "Follow Masjid",
+//                onButtonPressed: () {
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(
+//                      builder: (context) => FollowAMosqueScreen(),
+//                    ),
+//                  );
+//                },
+//              ),
+            ],
+          ),
+        ),
+
+        ///third tile
+        Container(
+          margin: EdgeInsets.all(16),
+          child: Row(
+            children: <Widget>[
+              MyGridTile(
+                text: "Connect to Digital Clock",
+                buttonText: "Connect",
+                onButtonPressed: () async {
+                  if (await DeviceApps.isAppInstalled(
+                      'pk.com.systemsintegration.panelconfigure')) {
+                    DeviceApps.openApp(
+                        'pk.com.systemsintegration.panelconfigure');
+                  } else {
+                    print('App not found');
+                  }
+                },
+              ),
               Spacer(),
+              CustomNotificationTile(
+                text: "Custom Notifications to Subscribers",
+                buttonText: "Send",
+                onButtonPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomNotificationPage()),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -218,10 +242,10 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
 //                          builder: (context) => MosqueSubscribersList()));
 //                },
 //              ),
-//              Spacer(),
+//
               MyGridTile(
-                text: "Open Salat Panel App",
-                buttonText: "Open App",
+                text: "Connect to Digital Clock",
+                buttonText: "Connect",
                 onButtonPressed: () async {
                   if (await DeviceApps.isAppInstalled(
                       'pk.com.systemsintegration.panelconfigure')) {
@@ -230,6 +254,18 @@ class _MosqueDashboardScreenState extends State<MosqueDashboardScreen> {
                   } else {
                     print('App not found');
                   }
+                },
+              ),
+              Spacer(),
+              CustomNotificationTile(
+                text: "Custom Notifications to Subscribers",
+                buttonText: "Send",
+                onButtonPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomNotificationPage()),
+                  );
                 },
               ),
             ],

@@ -28,8 +28,14 @@ class _MosqueSubscribersListState extends State<MosqueSubscribersList> {
   }
 
   _getSubscribersData() async {
-    if (Provider.of<MasjidProvider>(context, listen: false).masjid.subscribers == null ||
-        Provider.of<MasjidProvider>(context, listen: false).masjid.subscribers == 0) {
+    if (Provider.of<MasjidProvider>(context, listen: false)
+                .masjid
+                .subscribers ==
+            null ||
+        Provider.of<MasjidProvider>(context, listen: false)
+                .masjid
+                .subscribers ==
+            0) {
       gotData = true;
       setState(() {});
       return;
@@ -46,49 +52,49 @@ class _MosqueSubscribersListState extends State<MosqueSubscribersList> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            //AppBar
-            AdminAppBar(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              //AppBar
+              AdminAppBar(),
 
-            //Header
-            Consumer<MasjidProvider>(
-              builder: (context, masjidProvider, child) => MasjidDetailsHeader(
-                name: masjidProvider.masjid.name,
-                subscribersCount: masjidProvider.masjid.subscribers,
-                isJamiaMasjid: masjidProvider.masjid.isJamiaMasjid,
-              ),
-            ),
-
-            //Text
-            Container(
-              margin: EdgeInsets.only(top: 13, bottom: 36),
-              child: Center(
-                child: Text(
-                  "${Provider.of<MasjidProvider>(context).masjid.name} has been subscribed by the following users.",
-                  style: mainBodyTextStyle,
+              //Header
+              Consumer<MasjidProvider>(
+                builder: (context, masjidProvider, child) =>
+                    MasjidDetailsHeader(
+                  name: masjidProvider.masjid.name,
+                  subscribersCount: masjidProvider.masjid.subscribers,
+                  isJamiaMasjid: masjidProvider.masjid.isJamiaMasjid,
                 ),
               ),
-            ),
 
-            gotData
-                ? hasData
-                    ? ListView.builder(
-                        itemBuilder: (context, index) {
-                          return SubscriberListItem(
-                            subscriberData: subscribers[index],
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Text(
-                          "No subscriber",
-                          style: mainBodyTextStyle,
-                        ),
-                      )
-                : Center(child: CircularProgressIndicator()),
-            //Subscriber  List
-          ],
+              //Text
+              Container(
+                margin: EdgeInsets.only(top: 13, bottom: 36),
+                child: Center(
+                  child: Text(
+                    "${Provider.of<MasjidProvider>(context).masjid.name} has been subscribed by the following users.",
+                    style: mainBodyTextStyle,
+                  ),
+                ),
+              ),
+
+              gotData
+                  ? hasData
+                      ? Column(
+                          children: subscribers
+                              .map((e) => SubscriberListItem(subscriberData: e))
+                              .toList())
+                      : Center(
+                          child: Text(
+                            "No subscriber",
+                            style: mainBodyTextStyle,
+                          ),
+                        )
+                  : Center(child: CircularProgressIndicator()),
+              //Subscriber  List
+            ],
+          ),
         ),
       ),
     );

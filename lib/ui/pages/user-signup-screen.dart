@@ -105,6 +105,22 @@ class _UserSignUpScreenState extends State<UserSignUpScreen> {
                 style: roundedBlueBtnTS,
               ),
               onPressed: () async {
+                final errorMsg = 'Password Length should be at least 6 characters';
+                if (user.password.length < 6) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          'Login Failed',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: Text(errorMsg),
+                      );
+                    },
+                  );
+                  return;
+                }
                 setState(() {
                   isInProgress = true;
                 });

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -35,6 +36,12 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
 
   @override
   void initState() {
+    _checkIfSubscribed();
+    super.initState();
+  }
+
+  _checkIfSubscribed() {
+    print('@checkIfSubscribed');
     if (Provider.of<AuthProvider>(context, listen: false).isLogin) {
       FirestoreHelper()
           .checkIfFollowed(
@@ -47,7 +54,6 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
         });
       });
     }
-    super.initState();
   }
 
   @override
@@ -175,14 +181,15 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
   _followMosque(context) async {
     if (Provider.of<AuthProvider>(context, listen: false).isLogin) {
       _showSnackBar('You have successfully subscribed the mosque');
-      final user = Provider.of<AuthProvider>(context, listen: false).user;
+      final user = await FirebaseAuth.instance.currentUser();
       final masjid = Provider.of<MasjidProvider>(context, listen: false).masjid;
       setState(() {
         isFollowed = true;
       });
       FirestoreHelper().followMosque(masjid: masjid, user: user);
     } else {
-      _showLoginAlert(context);
+      await showDialog(context: context, child: CustomLoginAlert());
+      _checkIfSubscribed();
     }
   }
 
@@ -196,9 +203,9 @@ class _MasjidDetailsScreenState extends State<MasjidDetailsScreen> {
     FirestoreHelper().unFollowMosque(masjid: masjid, user: user);
   }
 
-  _showLoginAlert(context) {
-    showDialog(context: context, child: CustomLoginAlert());
-  }
+//  _showLoginAlert(context) async {
+//    await
+//  }
 
   _prayerTimings() {
     return Consumer<MasjidProvider>(
