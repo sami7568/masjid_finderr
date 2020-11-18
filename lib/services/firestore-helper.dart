@@ -126,17 +126,14 @@ class FirestoreHelper {
     print('@updateNamazTime');
     print('${masjid.toJson()}');
     try {
-      if (masjid.isApproved) {
-        await _db
-            .collection(_masjidCollection)
-            .document(uid)
-            .updateData(masjid.toJson());
-      } else {
-        await _db
-            .collection(_registerMasjidCollection)
-            .document(uid)
-            .updateData(masjid.toJson());
-      }
+      await _db
+          .collection(_masjidCollection)
+          .document(uid)
+          .updateData(masjid.toJson());
+      await _db
+          .collection(_registerMasjidCollection)
+          .document(uid)
+          .updateData(masjid.toJson());
     } catch (e) {
       print('Exception @creatMasjid: $e');
     }
